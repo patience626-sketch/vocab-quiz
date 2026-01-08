@@ -3,5 +3,65 @@
   { "id": "cat", "zh": "貓", "en": "cat", "img": "images/cat.jpg" },
   { "id": "dog", "zh": "狗", "en": "dog", "img": "images/dog.jpg" },
   { "id": "banana", "zh": "香蕉", "en": "banana", "img": "images/banana.jpg" },
-  { "id": "car", "zh": "汽車", "en": "car", "img": "images/car.jpg" }
+  { "id": "car", "zh": "汽車", "en": "car", "img": "images/car.jpg" },
+    {
+    "id": "ant",
+    "zh": "螞蟻",
+    "en": "ant",
+    "img": "images/ant.jpg"
+  },
+  {
+    "id": "bag",
+    "zh": "背包",
+    "en": "bag",
+    "img": "images/bag.jpg"
+  },
+  {
+    "id": "sad",
+    "zh": "難過",
+    "en": "sad",
+    "img": "images/sad.jpg"
+  },
+  {
+    "id": "gas",
+    "zh": "瓦斯",
+    "en": "gas",
+    "img": "images/gas.jpg"
+  },
+  {
+    "id": "cap",
+    "zh": "帽子",
+    "en": "cap",
+    "img": "images/cap.jpg"
+  },
+  {
+    "id": "cab",
+    "zh": "計程車",
+    "en": "cab",
+    "img": "images/cab.jpg"
+  },
+  {
+    "id": "map",
+    "zh": "地圖",
+    "en": "map",
+    "img": "images/map.jpg"
+  },
+  {
+    "id": "egg",
+    "zh": "蛋",
+    "en": "egg",
+    "img": "images/egg.jpg"
+  },
+  {
+    "id": "bed",
+    "zh": "床",
+    "en": "bed",
+    "img": "images/bed.jpg"
+  },
+  {
+    "id": "elephant",
+    "zh": "大象",
+    "en": "elephant",
+    "img": "images/elephant.jpg"
+  }
 ]
