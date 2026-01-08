@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>words.json 產生器</title>
+  <style>
+    :root{--bg:#f6f7fb;--card:#fff;--text:#111827;--muted:#6b7280;--bd:#e5e7eb}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:980px;margin:18px auto;padding:0 14px}
+    .card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px}
+    h1{margin:0 0 10px;font-size:18px}
+    .hint{color:var(--muted);font-weight:600;line-height:1.6}
+    textarea{width:100%;min-height:240px;border:1px solid var(--bd);border-radius:12px;padding:12px;font-size:14px;line-height:1.5;resize:vertical}
+    .row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+    label{display:flex;gap:8px;align-items:center;font-weight:700}
+    input,select{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;font-size:14px}
+    .btn{border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:800}
+    .btn.primary{background:#111827;color:#fff;border-color:#111827}
+    .out{min-height:260px}
+    .ok{color:#065f46;font-weight:900}
+    .no{color:#9f1239;font-weight:900}
+    .small{font-size:13px;color:var(--muted);font-weight:700}
+    code{background:#f3f4f6;padding:2px 6px;border-radius:8px}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>words.json 產生器（貼上表格 → JSON）</h1>
+      <div class="hint">
+        1) 請從 Excel/Google Sheets 複製三或四欄資料貼到下方。<br/>
+        2) 每列一筆：<code>id</code>、<code>中文</code>、<code>英文</code>、（可選）<code>圖片檔名</code>。<br/>
+        3) 產生後按「下載 words.json」，把檔案放回你的 repo 根目錄覆蓋原本的 <code>words.json</code>。<br/>
+        <span class="small">欄位可用 Tab（貼表格時預設）或逗號分隔。</span>
+      </div>
+
+      <div class="row">
+        <label>圖片資料夾前綴
+          <input id="imgPrefix" value="images/" />
+        </label>
+
+        <label>分隔符
+          <select id="delimiter">
+            <option value="auto">自動判斷（Tab 優先）</option>
+            <option value="tab">Tab</option>
+            <option value=",">逗號 ,</option>
+          </select>
+        </label>
+
+        <label>
+          <input type="checkbox" id="autoId" checked />
+          若 id 空白 → 用英文自動生成
+        </label>
+
+        <button class="btn primary" id="btnGen" type="button">產生 JSON</button>
+        <button class="btn" id="btnDownload" type="button" disabled>下載 words.json</button>
+        <button class="btn" id="btnCopy" type="button" disabled>複製 JSON</button>
+      </div>
+
+      <textarea id="input" placeholder="貼上表格資料（每列一筆）
+範例（四欄）：
+apple    蘋果    apple    apple.jpg
+cat      貓      cat      cat.png
+
+範例（三欄，沒圖片檔名也行）：
+banana   香蕉   banana
+"></textarea>
+
+      <div class="row">
+        <div id="status" class="small"></div>
+      </div>
+
+      <textarea id="output" class="out" placeholder="這裡會產生 words.json 內容…" readonly></textarea>
+
+      <div class="small">
+        常見注意：
+        <ul>
+          <li>圖片檔名請盡量用小寫、不要空白：例如 <code>apple-01.jpg</code></li>
+          <li>如果你只貼三欄（沒有圖片檔名），JSON 仍會產生，但測驗頁面圖片會顯示載入失敗（你之後補上檔名即可）</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const $ = (id) => document.getElementById(id);
+
+  function normalizeIdFromEn(en) {
+    return String(en || "")
+      .trim()
+      .toLowerCase()
+      .replace(/['"]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/[^a-z0-9-]/g, "");
+  }
+
+  function detectDelimiter(text) {
+    if (text.includes("\t")) return "\t";
+    const commaCount = (text.match(/,/g) || []).length;
+    if (commaCount >= 3) return ",";
+    return "\t";
+  }
+
+  function parseLines(raw, delimiterMode) {
+    const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
+    if (!lines.length) return { rows: [], delim: null };
+
+    let delim = "\t";
+    if (delimiterMode === "tab") delim = "\t";
+    else if (delimiterMode === ",") delim = ",";
+    else delim = detectDelimiter(raw);
+
+    const rows = lines.map(line => {
+      const parts = delim === "\t" ? line.split("\t") : line.split(",");
+      return parts.map(p => p.trim()).filter(p => p.length > 0);
+    });
+
+    return { rows, delim };
+  }
+
+  function buildWords(rows, imgPrefix, autoId) {
+    const items = [];
+    const problems = [];
+    const seenIds = new Set();
+
+    rows.forEach((cols, idx) => {
+      let id = "", zh = "", en = "", imgFile = "";
+
+      if (cols.length >= 4) {
+        [id, zh, en, imgFile] = cols;
+      } else if (cols.length === 3) {
+        [id, zh, en] = cols;
+      } else if (cols.length === 2) {
+        [zh, en] = cols;
+      } else {
+        problems.push(`第 ${idx+1} 列欄位不足（至少要 2 欄：中文、英文）`);
+        return;
+      }
+
+      if (!zh || !en) {
+        problems.push(`第 ${idx+1} 列缺少中文或英文`);
+        return;
+      }
+
+      if (!id && autoId) id = normalizeIdFromEn(en);
+      if (!id) {
+        problems.push(`第 ${idx+1} 列 id 空白（可勾選「若 id 空白 → 用英文自動生成」）`);
+        return;
+      }
+
+      if (seenIds.has(id)) {
+        problems.push(`第 ${idx+1} 列 id 重複：${id}`);
+        return;
+      }
+      seenIds.add(id);
+
+      const img = imgFile ? (imgPrefix + imgFile.replace(/^\/+/, "")) : "";
+      items.push({ id, zh, en, img });
+    });
+
+    return { items, problems };
+  }
+
+  function renderOutput(items) {
+    return JSON.stringify(items, null, 2);
+  }
+
+  function download(filename, text) {
+    const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  $("btnGen").addEventListener("click", () => {
+    const raw = $("input").value || "";
+    const delimiterMode = $("delimiter").value;
+    const imgPrefix = $("imgPrefix").value || "images/";
+    const autoId = $("autoId").checked;
+
+    const { rows, delim } = parseLines(raw, delimiterMode);
+    if (!rows.length) {
+      $("status").innerHTML = `<span class="no">請先貼上資料</span>`;
+      $("output").value = "";
+      $("btnDownload").disabled = true;
+      $("btnCopy").disabled = true;
+      return;
+    }
+
+    const { items, problems } = buildWords(rows, imgPrefix, autoId);
+
+    if (problems.length) {
+      $("status").innerHTML =
+        `<span class="no">有 ${problems.length} 個問題，請修正：</span><br>` +
+        problems.slice(0, 8).map(p => "• " + p).join("<br>") +
+        (problems.length > 8 ? "<br>…（只顯示前 8 個）" : "");
+      $("output").value = "";
+      $("btnDownload").disabled = true;
+      $("btnCopy").disabled = true;
+      return;
+    }
+
+    const jsonText = renderOutput(items);
+    $("output").value = jsonText;
+
+    const missingImg = items.filter(x => !x.img).length;
+    $("status").innerHTML =
+      `<span class="ok">完成！共 ${items.length} 筆</span>` +
+      `（分隔符：${delim === "\t" ? "Tab" : "逗號"}）` +
+      (missingImg ? `<br><span class="no">提醒：有 ${missingImg} 筆沒有圖片路徑（img 空白）</span>` : "");
+
+    $("btnDownload").disabled = false;
+    $("btnCopy").disabled = false;
+  });
+
+  $("btnDownload").addEventListener("click", () => {
+    const text = $("output").value || "";
+    if (!text) return;
+    download("words.json", text);
+  });
+
+  $("btnCopy").addEventListener("click", async () => {
+    const text = $("output").value || "";
+    if (!text) return;
+    try {
+      await navigator.clipboard.writeText(text);
+      $("status").innerHTML = `<span class="ok">已複製到剪貼簿</span>`;
+    } catch {
+      $("status").innerHTML = `<span class="no">複製失敗：你的瀏覽器可能禁止剪貼簿權限</span>`;
+    }
+  });
+</script>
+</body>
+</html>
