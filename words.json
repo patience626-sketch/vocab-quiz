@@ -1,0 +1,7 @@
+[
+  { "id": "apple", "zh": "蘋果", "en": "apple", "img": "images/apple.jpg" },
+  { "id": "cat", "zh": "貓", "en": "cat", "img": "images/cat.jpg" },
+  { "id": "dog", "zh": "狗", "en": "dog", "img": "images/dog.jpg" },
+  { "id": "banana", "zh": "香蕉", "en": "banana", "img": "images/banana.jpg" },
+  { "id": "car", "zh": "汽車", "en": "car", "img": "images/car.jpg" }
+]
