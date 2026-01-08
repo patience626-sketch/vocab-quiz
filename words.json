@@ -1,10 +1,11 @@
 [
-  { "id": "apple", "zh": "蘋果", "en": "apple", "img": "images/apple.jpg" },
-  { "id": "cat", "zh": "貓", "en": "cat", "img": "images/cat.jpg" },
-  { "id": "dog", "zh": "狗", "en": "dog", "img": "images/dog.jpg" },
-  { "id": "banana", "zh": "香蕉", "en": "banana", "img": "images/banana.jpg" },
-  { "id": "car", "zh": "汽車", "en": "car", "img": "images/car.jpg" },
-    {
+  {
+    "id": "apple",
+    "zh": "蘋果",
+    "en": "apple",
+    "img": "images/apple.jpg"
+  },
+  {
     "id": "ant",
     "zh": "螞蟻",
     "en": "ant",
@@ -63,5 +64,809 @@
     "zh": "大象",
     "en": "elephant",
     "img": "images/elephant.jpg"
+  },
+  {
+    "id": "tent",
+    "zh": "帳篷",
+    "en": "tent",
+    "img": "images/tent.jpg"
+  },
+  {
+    "id": "leg",
+    "zh": "腿",
+    "en": "leg",
+    "img": "images/leg.jpg"
+  },
+  {
+    "id": "pen",
+    "zh": "筆",
+    "en": "pen",
+    "img": "images/pen.jpg"
+  },
+  {
+    "id": "red",
+    "zh": "紅色",
+    "en": "red",
+    "img": "images/red.jpg"
+  },
+  {
+    "id": "ten",
+    "zh": "10",
+    "en": "ten",
+    "img": "images/ten.jpg"
+  },
+  {
+    "id": "eight",
+    "zh": "8",
+    "en": "eight",
+    "img": "images/eight.jpg"
+  },
+  {
+    "id": "emperor",
+    "zh": "皇帝",
+    "en": "emperor",
+    "img": "images/emperor.jpg"
+  },
+  {
+    "id": "ink",
+    "zh": "墨水",
+    "en": "ink",
+    "img": "images/ink.jpg"
+  },
+  {
+    "id": "pig",
+    "zh": "豬",
+    "en": "pig",
+    "img": "images/pig.jpg"
+  },
+  {
+    "id": "bib",
+    "zh": "圍兜",
+    "en": "bib",
+    "img": "images/bib.jpg"
+  },
+  {
+    "id": "igloo",
+    "zh": "冰屋",
+    "en": "igloo",
+    "img": "images/igloo.jpg"
+  },
+  {
+    "id": "six",
+    "zh": "6",
+    "en": "six",
+    "img": "images/six.jpg"
+  },
+  {
+    "id": "mix",
+    "zh": "攪拌",
+    "en": "mix",
+    "img": "images/mix.jpg"
+  },
+  {
+    "id": "wig",
+    "zh": "假髮",
+    "en": "wig",
+    "img": "images/wig.jpg"
+  },
+  {
+    "id": "pin",
+    "zh": "圖釘",
+    "en": "pin",
+    "img": "images/pin.jpg"
+  },
+  {
+    "id": "in",
+    "zh": "在…裡面",
+    "en": "in",
+    "img": "images/in.jpg"
+  },
+  {
+    "id": "insect",
+    "zh": "昆蟲",
+    "en": "insect",
+    "img": "images/insect.jpg"
+  },
+  {
+    "id": "mom",
+    "zh": "媽媽",
+    "en": "mom",
+    "img": "images/mom.jpg"
+  },
+  {
+    "id": "fox",
+    "zh": "狐狸",
+    "en": "fox",
+    "img": "images/fox.jpg"
+  },
+  {
+    "id": "octopus",
+    "zh": "章魚",
+    "en": "octopus",
+    "img": "images/octopus.jpg"
+  },
+  {
+    "id": "doll",
+    "zh": "洋娃娃",
+    "en": "doll",
+    "img": "images/doll.jpg"
+  },
+  {
+    "id": "sock",
+    "zh": "襪子",
+    "en": "sock",
+    "img": "images/sock.jpg"
+  },
+  {
+    "id": "rock",
+    "zh": "岩石",
+    "en": "rock",
+    "img": "images/rock.jpg"
+  },
+  {
+    "id": "orange",
+    "zh": "柳丁",
+    "en": "orange",
+    "img": "images/orange.jpg"
+  },
+  {
+    "id": "onion",
+    "zh": "洋蔥",
+    "en": "onion",
+    "img": "images/onion.jpg"
+  },
+  {
+    "id": "old",
+    "zh": "老的",
+    "en": "old",
+    "img": "images/old.jpg"
+  },
+  {
+    "id": "bug",
+    "zh": "蟲",
+    "en": "bug",
+    "img": "images/bug.jpg"
+  },
+  {
+    "id": "cup",
+    "zh": "杯子",
+    "en": "cup",
+    "img": "images/cup.jpg"
+  },
+  {
+    "id": "sun",
+    "zh": "太陽",
+    "en": "sun",
+    "img": "images/sun.jpg"
+  },
+  {
+    "id": "hug",
+    "zh": "擁抱",
+    "en": "hug",
+    "img": "images/hug.jpg"
+  },
+  {
+    "id": "umbrella",
+    "zh": "雨傘",
+    "en": "umbrella",
+    "img": "images/umbrella.jpg"
+  },
+  {
+    "id": "duck",
+    "zh": "鴨",
+    "en": "duck",
+    "img": "images/duck.jpg"
+  },
+  {
+    "id": "pup",
+    "zh": "小狗",
+    "en": "pup",
+    "img": "images/pup.jpg"
+  },
+  {
+    "id": "nut",
+    "zh": "堅果",
+    "en": "nut",
+    "img": "images/nut.jpg"
+  },
+  {
+    "id": "bus",
+    "zh": "公車",
+    "en": "bus",
+    "img": "images/bus.jpg"
+  },
+  {
+    "id": "uncle",
+    "zh": "叔叔",
+    "en": "uncle",
+    "img": "images/uncle.jpg"
+  },
+  {
+    "id": "cave",
+    "zh": "山洞",
+    "en": "cave",
+    "img": "images/cave.jpg"
+  },
+  {
+    "id": "whale",
+    "zh": "鯨魚",
+    "en": "whale",
+    "img": "images/whale.jpg"
+  },
+  {
+    "id": "cape",
+    "zh": "披風",
+    "en": "cape",
+    "img": "images/cape.jpg"
+  },
+  {
+    "id": "cake",
+    "zh": "蛋糕",
+    "en": "cake",
+    "img": "images/cake.jpg"
+  },
+  {
+    "id": "lake",
+    "zh": "湖",
+    "en": "lake",
+    "img": "images/lake.jpg"
+  },
+  {
+    "id": "snake",
+    "zh": "蛇",
+    "en": "snake",
+    "img": "images/snake.jpg"
+  },
+  {
+    "id": "hate",
+    "zh": "討厭",
+    "en": "hate",
+    "img": "images/hate.jpg"
+  },
+  {
+    "id": "tape",
+    "zh": "膠帶",
+    "en": "tape",
+    "img": "images/tape.jpg"
+  },
+  {
+    "id": "grape",
+    "zh": "葡萄",
+    "en": "grape",
+    "img": "images/grape.jpg"
+  },
+  {
+    "id": "game",
+    "zh": "遊戲",
+    "en": "game",
+    "img": "images/game.jpg"
+  },
+  {
+    "id": "Pete",
+    "zh": "彼特(人名)",
+    "en": "Pete",
+    "img": "images/Pete.jpg"
+  },
+  {
+    "id": "these",
+    "zh": "這些",
+    "en": "these",
+    "img": "images/these.jpg"
+  },
+  {
+    "id": "Eve",
+    "zh": "衣芙(人名)",
+    "en": "Eve",
+    "img": "images/Eve.jpg"
+  },
+  {
+    "id": "Chinese",
+    "zh": "中國人",
+    "en": "Chinese",
+    "img": "images/Chinese.jpg"
+  },
+  {
+    "id": "bike",
+    "zh": "腳踏車",
+    "en": "bike",
+    "img": "images/bike.jpg"
+  },
+  {
+    "id": "rice",
+    "zh": "米",
+    "en": "rice",
+    "img": "images/rice.jpg"
+  },
+  {
+    "id": "nine",
+    "zh": "9",
+    "en": "nine",
+    "img": "images/nine.jpg"
+  },
+  {
+    "id": "white",
+    "zh": "白色",
+    "en": "white",
+    "img": "images/white.jpg"
+  },
+  {
+    "id": "dive",
+    "zh": "潛水",
+    "en": "dive",
+    "img": "images/dive.jpg"
+  },
+  {
+    "id": "kite",
+    "zh": "風箏",
+    "en": "kite",
+    "img": "images/kite.jpg"
+  },
+  {
+    "id": "five",
+    "zh": "5",
+    "en": "five",
+    "img": "images/five.jpg"
+  },
+  {
+    "id": "ride",
+    "zh": "騎(車)",
+    "en": "ride",
+    "img": "images/ride.jpg"
+  },
+  {
+    "id": "fire",
+    "zh": "火",
+    "en": "fire",
+    "img": "images/fire.jpg"
+  },
+  {
+    "id": "smile",
+    "zh": "微笑",
+    "en": "smile",
+    "img": "images/smile.jpg"
+  },
+  {
+    "id": "cone",
+    "zh": "冰淇淋(筒)",
+    "en": "cone",
+    "img": "images/cone.jpg"
+  },
+  {
+    "id": "smoke",
+    "zh": "抽(菸)",
+    "en": "smoke",
+    "img": "images/smoke.jpg"
+  },
+  {
+    "id": "hole",
+    "zh": "洞",
+    "en": "hole",
+    "img": "images/hole.jpg"
+  },
+  {
+    "id": "doze",
+    "zh": "打瞌睡",
+    "en": "doze",
+    "img": "images/doze.jpg"
+  },
+  {
+    "id": "hose",
+    "zh": "軟管",
+    "en": "hose",
+    "img": "images/hose.jpg"
+  },
+  {
+    "id": "pole",
+    "zh": "(電線)桿",
+    "en": "pole",
+    "img": "images/pole.jpg"
+  },
+  {
+    "id": "robe",
+    "zh": "長袍",
+    "en": "robe",
+    "img": "images/robe.jpg"
+  },
+  {
+    "id": "stone",
+    "zh": "石頭",
+    "en": "stone",
+    "img": "images/stone.jpg"
+  },
+  {
+    "id": "bone",
+    "zh": "骨頭",
+    "en": "bone",
+    "img": "images/bone.jpg"
+  },
+  {
+    "id": "note",
+    "zh": "筆記",
+    "en": "note",
+    "img": "images/note.jpg"
+  },
+  {
+    "id": "cube",
+    "zh": "立方體",
+    "en": "cube",
+    "img": "images/cube.jpg"
+  },
+  {
+    "id": "cute",
+    "zh": "可愛",
+    "en": "cute",
+    "img": "images/cute.jpg"
+  },
+  {
+    "id": "tube",
+    "zh": "(水)管",
+    "en": "tube",
+    "img": "images/tube.jpg"
+  },
+  {
+    "id": "huge",
+    "zh": "巨大的",
+    "en": "huge",
+    "img": "images/huge.jpg"
+  },
+  {
+    "id": "mute",
+    "zh": "靜音",
+    "en": "mute",
+    "img": "images/mute.jpg"
+  },
+  {
+    "id": "mule",
+    "zh": "騾",
+    "en": "mule",
+    "img": "images/mule.jpg"
+  },
+  {
+    "id": "rule",
+    "zh": "規則",
+    "en": "rule",
+    "img": "images/rule.jpg"
+  },
+  {
+    "id": "use",
+    "zh": "使用",
+    "en": "use",
+    "img": "images/use.jpg"
+  },
+  {
+    "id": "puke",
+    "zh": "嘔吐",
+    "en": "puke",
+    "img": "images/puke.jpg"
+  },
+  {
+    "id": "flute",
+    "zh": "長笛",
+    "en": "flute",
+    "img": "images/flute.jpg"
+  },
+  {
+    "id": "jar",
+    "zh": "罐子",
+    "en": "jar",
+    "img": "images/jar.jpg"
+  },
+  {
+    "id": "shark",
+    "zh": "鯊魚",
+    "en": "shark",
+    "img": "images/shark.jpg"
+  },
+  {
+    "id": "scarf",
+    "zh": "圍巾",
+    "en": "scarf",
+    "img": "images/scarf.jpg"
+  },
+  {
+    "id": "star",
+    "zh": "星星",
+    "en": "star",
+    "img": "images/star.jpg"
+  },
+  {
+    "id": "arch",
+    "zh": "拱門",
+    "en": "arch",
+    "img": "images/arch.jpg"
+  },
+  {
+    "id": "arm",
+    "zh": "手臂",
+    "en": "arm",
+    "img": "images/arm.jpg"
+  },
+  {
+    "id": "barn",
+    "zh": "穀倉",
+    "en": "barn",
+    "img": "images/barn.jpg"
+  },
+  {
+    "id": "army",
+    "zh": "軍隊",
+    "en": "army",
+    "img": "images/army.jpg"
+  },
+  {
+    "id": "cartoon",
+    "zh": "卡通",
+    "en": "cartoon",
+    "img": "images/cartoon.jpg"
+  },
+  {
+    "id": "mother",
+    "zh": "母親",
+    "en": "mother",
+    "img": "images/mother.jpg"
+  },
+  {
+    "id": "germ",
+    "zh": "病菌",
+    "en": "germ",
+    "img": "images/germ.jpg"
+  },
+  {
+    "id": "fern",
+    "zh": "蕨類植物",
+    "en": "fern",
+    "img": "images/fern.jpg"
+  },
+  {
+    "id": "teacher",
+    "zh": "老師",
+    "en": "teacher",
+    "img": "images/teacher.jpg"
+  },
+  {
+    "id": "clkerk",
+    "zh": "店員",
+    "en": "clkerk",
+    "img": "images/clkerk.jpg"
+  },
+  {
+    "id": "driver",
+    "zh": "司機",
+    "en": "driver",
+    "img": "images/driver.jpg"
+  },
+  {
+    "id": "father",
+    "zh": "父親",
+    "en": "father",
+    "img": "images/father.jpg"
+  },
+  {
+    "id": "her",
+    "zh": "她的(女生的她)",
+    "en": "her",
+    "img": "images/her.jpg"
+  },
+  {
+    "id": "ruler",
+    "zh": "尺",
+    "en": "ruler",
+    "img": "images/ruler.jpg"
+  },
+  {
+    "id": "summer",
+    "zh": "夏天",
+    "en": "summer",
+    "img": "images/summer.jpg"
+  },
+  {
+    "id": "one",
+    "zh": "1",
+    "en": "one",
+    "img": "images/one.jpg"
+  },
+  {
+    "id": "two",
+    "zh": "2",
+    "en": "two",
+    "img": "images/two.jpg"
+  },
+  {
+    "id": "three",
+    "zh": "3",
+    "en": "three",
+    "img": "images/three.jpg"
+  },
+  {
+    "id": "four",
+    "zh": "4",
+    "en": "four",
+    "img": "images/four.jpg"
+  },
+  {
+    "id": "seven",
+    "zh": "7",
+    "en": "seven",
+    "img": "images/seven.jpg"
+  },
+  {
+    "id": "eleven",
+    "zh": "11",
+    "en": "eleven",
+    "img": "images/eleven.jpg"
+  },
+  {
+    "id": "twlelve",
+    "zh": "12",
+    "en": "twlelve",
+    "img": "images/twlelve.jpg"
+  },
+  {
+    "id": "thirteen",
+    "zh": "13",
+    "en": "thirteen",
+    "img": "images/thirteen.jpg"
+  },
+  {
+    "id": "fourteen",
+    "zh": "14",
+    "en": "fourteen",
+    "img": "images/fourteen.jpg"
+  },
+  {
+    "id": "fifteen",
+    "zh": "15",
+    "en": "fifteen",
+    "img": "images/fifteen.jpg"
+  },
+  {
+    "id": "bear",
+    "zh": "熊",
+    "en": "bear",
+    "img": "images/bear.jpg"
+  },
+  {
+    "id": "key",
+    "zh": "鑰匙",
+    "en": "key",
+    "img": "images/key.jpg"
+  },
+  {
+    "id": "goat",
+    "zh": "山羊",
+    "en": "goat",
+    "img": "images/goat.jpg"
+  },
+  {
+    "id": "girl",
+    "zh": "女生",
+    "en": "girl",
+    "img": "images/girl.jpg"
+  },
+  {
+    "id": "monkey",
+    "zh": "猴子",
+    "en": "monkey",
+    "img": "images/monkey.jpg"
+  },
+  {
+    "id": "hat",
+    "zh": "帽子",
+    "en": "hat",
+    "img": "images/hat.jpg"
+  },
+  {
+    "id": "hen",
+    "zh": "母雞",
+    "en": "hen",
+    "img": "images/hen.jpg"
+  },
+  {
+    "id": "lion",
+    "zh": "獅子",
+    "en": "lion",
+    "img": "images/lion.jpg"
+  },
+  {
+    "id": "milk",
+    "zh": "牛奶",
+    "en": "milk",
+    "img": "images/milk.jpg"
+  },
+  {
+    "id": "boy",
+    "zh": "男生",
+    "en": "boy",
+    "img": "images/boy.jpg"
+  },
+  {
+    "id": "his",
+    "zh": "他的(男生的他)",
+    "en": "his",
+    "img": "images/his.jpg"
+  },
+  {
+    "id": "he",
+    "zh": "他(男生的他)",
+    "en": "he",
+    "img": "images/he.jpg"
+  },
+  {
+    "id": "she",
+    "zh": "她(女生的她)",
+    "en": "she",
+    "img": "images/she.jpg"
+  },
+  {
+    "id": "brown",
+    "zh": "咖啡色",
+    "en": "brown",
+    "img": "images/brown.jpg"
+  },
+  {
+    "id": "purple",
+    "zh": "紫色",
+    "en": "purple",
+    "img": "images/purple.jpg"
+  },
+  {
+    "id": "pink",
+    "zh": "粉紅色",
+    "en": "pink",
+    "img": "images/pink.jpg"
+  },
+  {
+    "id": "yellow",
+    "zh": "黃色",
+    "en": "yellow",
+    "img": "images/yellow.jpg"
+  },
+  {
+    "id": "blue",
+    "zh": "藍色",
+    "en": "blue",
+    "img": "images/blue.jpg"
+  },
+  {
+    "id": "paper",
+    "zh": "紙",
+    "en": "paper",
+    "img": "images/paper.jpg"
+  },
+  {
+    "id": "classroom",
+    "zh": "教室",
+    "en": "classroom",
+    "img": "images/classroom.jpg"
+  },
+  {
+    "id": "stand-up",
+    "zh": "站起來",
+    "en": "stand-up",
+    "img": "images/stand-up.jpg"
+  },
+  {
+    "id": "sit-down",
+    "zh": "坐下",
+    "en": "sit-down",
+    "img": "images/sit-down.jpg"
+  },
+  {
+    "id": "crayon",
+    "zh": "蠟筆",
+    "en": "crayon",
+    "img": "images/crayon.jpg"
+  },
+  {
+    "id": "pencil",
+    "zh": "鉛筆",
+    "en": "pencil",
+    "img": "images/pencil.jpg"
+  },
+  {
+    "id": "peach",
+    "zh": "桃子",
+    "en": "peach",
+    "img": "images/peach.jpg"
   }
 ]
