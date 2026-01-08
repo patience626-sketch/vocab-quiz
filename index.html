@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>單字測驗</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="title">單字測驗</div>
+
+    <div class="controls">
+      <label class="pill">
+        模式
+        <select id="modeSelect">
+          <option value="mc">選擇題</option>
+          <option value="type">輸入題</option>
+        </select>
+      </label>
+
+      <label class="pill">
+        出題範圍
+        <select id="poolSelect">
+          <option value="all">全部</option>
+          <option value="wrong">錯題本</option>
+        </select>
+      </label>
+
+      <button id="btnResetWrong" class="btn ghost" title="清除錯題紀錄">清除錯題</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <div class="q-head">
+        <div class="q-zh" id="zhText">載入中…</div>
+        <button id="btnSpeak" class="btn" type="button">🔊 發音</button>
+      </div>
+
+      <div class="imgbox">
+        <img id="img" alt="題目圖片" />
+      </div>
+
+      <div id="answerArea" class="answer-area"></div>
+
+      <div id="resultArea" class="result-area"></div>
+
+      <div class="footer">
+        <div class="stats" id="statsText"></div>
+        <div class="nav">
+          <button id="btnNext" class="btn primary" type="button">下一題</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./app.js"></script>
+</body>
+</html>
