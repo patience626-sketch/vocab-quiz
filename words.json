@@ -624,10 +624,10 @@
     "img": "images/teacher.jpg"
   },
   {
-    "id": "clkerk",
+    "id": "clerk",
     "zh": "店員",
-    "en": "clkerk",
-    "img": "images/clkerk.jpg"
+    "en": "clerk",
+    "img": "images/clerk.jpg"
   },
   {
     "id": "driver",
