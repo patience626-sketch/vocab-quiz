@@ -32,7 +32,7 @@
       <h1>words.json 產生器（貼上表格 → JSON）</h1>
       <div class="hint">
         ✅ 推薦 5 欄：<code>id</code>、<code>中文</code>、<code>英文</code>、<code>圖片檔名</code>、<code>分類(cat)</code><br/>
-        你也可以用 4 欄（不含分類）或 3 欄（不含圖片/分類），但分類測驗就會少資料。<br/>
+        你也可以用 4 欄（不含分類）或 3 欄（不含圖片/分類）。<br/>
         <span class="small">欄位可用 Tab（貼表格時預設）或逗號分隔。</span>
       </div>
 
@@ -82,7 +82,6 @@ car      汽車    car
         <ul>
           <li>圖片檔名請盡量用小寫、不要空白：例如 <code>apple-01.jpg</code></li>
           <li>分類(cat)可以用：水果/動物/交通工具/食物/顏色…（你自己定）</li>
-          <li>如果你沒填圖片檔名（3欄），測驗頁圖片會顯示載入失敗（可之後補）</li>
         </ul>
       </div>
     </div>
@@ -96,28 +95,28 @@ car      汽車    car
       .trim()
       .toLowerCase()
       .replace(/['"]/g, "")
-      .replace(/\\s+/g, "-")
+      .replace(/\s+/g, "-")
       .replace(/[^a-z0-9-]/g, "");
   }
 
   function detectDelimiter(text) {
-    if (text.includes("\\t")) return "\\t";
+    if (text.includes("\t")) return "\t";
     const commaCount = (text.match(/,/g) || []).length;
     if (commaCount >= 3) return ",";
-    return "\\t";
+    return "\t";
   }
 
   function parseLines(raw, delimiterMode) {
-    const lines = raw.split(/\\r?\\n/).map(l => l.trim()).filter(Boolean);
+    const lines = raw.split(/\r?\n/).map(l => l.trim()).filter(Boolean);
     if (!lines.length) return { rows: [], delim: null };
 
-    let delim = "\\t";
-    if (delimiterMode === "tab") delim = "\\t";
+    let delim = "\t";
+    if (delimiterMode === "tab") delim = "\t";
     else if (delimiterMode === ",") delim = ",";
     else delim = detectDelimiter(raw);
 
     const rows = lines.map(line => {
-      const parts = delim === "\\t" ? line.split("\\t") : line.split(",");
+      const parts = delim === "\t" ? line.split("\t") : line.split(",");
       return parts.map(p => p.trim());
     });
 
@@ -131,11 +130,6 @@ car      汽車    car
     const seenIds = new Set();
 
     rows.forEach((cols, idx) => {
-      // 支援：
-      // 5欄：id, zh, en, imgFile, cat
-      // 4欄：id, zh, en, imgFile
-      // 3欄：id, zh, en
-      // 2欄：zh, en
       let id = "", zh = "", en = "", imgFile = "", cat = "";
 
       if (cols.length >= 5) {
@@ -147,30 +141,30 @@ car      汽車    car
       } else if (cols.length === 2) {
         [zh, en] = cols;
       } else {
-        problems.push(\`第 \${idx+1} 列欄位不足（至少 2 欄：中文、英文）\`);
+        problems.push(`第 ${idx+1} 列欄位不足（至少 2 欄：中文、英文）`);
         return;
       }
 
       if (!zh || !en) {
-        problems.push(\`第 \${idx+1} 列缺少中文或英文\`);
+        problems.push(`第 ${idx+1} 列缺少中文或英文`);
         return;
       }
 
       if (!id && autoId) id = normalizeIdFromEn(en);
       if (!id) {
-        problems.push(\`第 \${idx+1} 列 id 空白（可勾選「若 id 空白 → 用英文自動生成」）\`);
+        problems.push(`第 ${idx+1} 列 id 空白（可勾選「若 id 空白 → 用英文自動生成」）`);
         return;
       }
 
       if (seenIds.has(id)) {
-        problems.push(\`第 \${idx+1} 列 id 重複：\${id}\`);
+        problems.push(`第 ${idx+1} 列 id 重複：${id}`);
         return;
       }
       seenIds.add(id);
 
-      const img = imgFile ? (imgPrefix + imgFile.replace(/^\\/+/, "")) : "";
-      if (!img) warnings.push(\`第 \${idx+1} 列沒有圖片檔名（img 會空白）\`);
-      if (!cat) warnings.push(\`第 \${idx+1} 列沒有分類(cat)（分類測驗會少）\`);
+      const img = imgFile ? (imgPrefix + imgFile.replace(/^\/+/, "")) : "";
+      if (!img) warnings.push(`第 ${idx+1} 列沒有圖片檔名（img 會空白）`);
+      if (!cat) warnings.push(`第 ${idx+1} 列沒有分類(cat)（分類測驗會少）`);
 
       items.push({ id, zh, en, img, cat: (cat || "").trim() });
     });
@@ -232,7 +226,7 @@ car      汽車    car
       : "";
 
     $("status").innerHTML =
-      `<span class="ok">完成！共 ${items.length} 筆</span>（分隔符：${delim === "\\t" ? "Tab" : "逗號"}）` + warnLine;
+      `<span class="ok">完成！共 ${items.length} 筆</span>（分隔符：${delim === "\t" ? "Tab" : "逗號"}）` + warnLine;
 
     $("btnDownload").disabled = false;
     $("btnCopy").disabled = false;
