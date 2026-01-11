@@ -9,30 +9,31 @@ const KID_OPTIONS = [
   { id: "anan", name: "安安" },
 ];
 
-// 目前使用者（預設西瓜，可記住上次選擇）
 let kidId = localStorage.getItem("vocab_kid_active") || "xigua";
-
 function LS_WRONG_KEY() { return `vocab_wrong_v1_${kidId}`; }
 function LS_STATS_KEY() { return `vocab_stats_v1_${kidId}`; }
+function LS_NEW_KEY() { return `vocab_new_v1_${kidId}`; } // ✅ 新學清單（每個小孩各自）
 
 // ====== 題庫/狀態 ======
 let words = [];
 let current = null;
 
 let mode = "mc";      // "mc" | "type"
-let pool = "all";     // "all" | "wrong"
+let pool = "all";     // "all" | "wrong" | "new" | "category"
+let selectedCat = ""; // pool=category 時使用
 
-// 本輪出題佇列：確保「一輪內不重複」
+// 本輪出題佇列（確保一輪內不重複）
 let queue = [];
 let currentPoolSig = "";
 
-// 答對自動跳題設定
+// 答對自動跳題
 const AUTO_NEXT_ON_CORRECT = true;
+const AUTO_NEXT_DELAY_MS = 700;
 
 // ====== DOM helper ======
 const el = (id) => document.getElementById(id);
 
-// ====== localStorage helpers（依 kid 分開） ======
+// ====== localStorage helpers ======
 function loadWrongMap() {
   try { return JSON.parse(localStorage.getItem(LS_WRONG_KEY()) || "{}"); }
   catch { return {}; }
@@ -46,6 +47,19 @@ function loadStats() {
 }
 function saveStats(s) {
   localStorage.setItem(LS_STATS_KEY(), JSON.stringify(s));
+}
+
+// 新學清單：用 Set 存 id
+function loadNewSet() {
+  try {
+    const arr = JSON.parse(localStorage.getItem(LS_NEW_KEY()) || "[]");
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch {
+    return new Set();
+  }
+}
+function saveNewSet(set) {
+  localStorage.setItem(LS_NEW_KEY(), JSON.stringify(Array.from(set)));
 }
 
 // ====== utils ======
@@ -80,24 +94,87 @@ function speak(enText) {
   window.speechSynthesis.speak(u);
 }
 
+// ====== 分類列表 ======
+function getAllCategories() {
+  const cats = new Set();
+  for (const w of words) {
+    if (w.cat && String(w.cat).trim()) cats.add(String(w.cat).trim());
+  }
+  return Array.from(cats).sort((a,b)=>a.localeCompare(b, "zh-Hant"));
+}
+
+function refreshCategorySelectUI() {
+  const catPill = el("catPill");
+  const catSelect = el("catSelect");
+  if (!catPill || !catSelect) return;
+
+  if (pool !== "category") {
+    catPill.style.display = "none";
+    return;
+  }
+  catPill.style.display = "flex";
+
+  const cats = getAllCategories();
+  catSelect.innerHTML = "";
+
+  // 若沒有分類
+  if (cats.length === 0) {
+    const opt = document.createElement("option");
+    opt.value = "";
+    opt.textContent = "（尚無分類）";
+    catSelect.appendChild(opt);
+    selectedCat = "";
+    return;
+  }
+
+  // 若還沒選過分類，預設第一個
+  if (!selectedCat || !cats.includes(selectedCat)) selectedCat = cats[0];
+
+  for (const c of cats) {
+    const opt = document.createElement("option");
+    opt.value = c;
+    opt.textContent = c;
+    catSelect.appendChild(opt);
+  }
+  catSelect.value = selectedCat;
+}
+
 // ====== 題庫佇列：一輪內不重複 ======
 function poolSignature() {
-  // pool + kid + words.length + (若錯題本則錯題數) 形成簽名
   const wrong = loadWrongMap();
+  const newSet = loadNewSet();
+
   let wrongCount = 0;
+  let newCount = 0;
+  let catCount = 0;
 
   if (pool === "wrong") {
     wrongCount = words.reduce((acc, w) => acc + ((wrong[w.id] || 0) > 0 ? 1 : 0), 0);
   }
+  if (pool === "new") {
+    newCount = words.reduce((acc, w) => acc + (newSet.has(w.id) ? 1 : 0), 0);
+  }
+  if (pool === "category") {
+    catCount = words.reduce((acc, w) => acc + (String(w.cat||"").trim() === String(selectedCat||"").trim() ? 1 : 0), 0);
+  }
 
-  return `${kidId}|${pool}|${mode}|${words.length}|${wrongCount}`;
+  return `${kidId}|${pool}|${mode}|${words.length}|${wrongCount}|${newCount}|${selectedCat}|${catCount}`;
 }
 
 function buildQueue() {
   const wrong = loadWrongMap();
-  const candidates = pool === "wrong"
-    ? words.filter(w => (wrong[w.id] || 0) > 0)
-    : words;
+  const newSet = loadNewSet();
+  const cat = String(selectedCat || "").trim();
+
+  let candidates = words;
+
+  if (pool === "wrong") {
+    candidates = words.filter(w => (wrong[w.id] || 0) > 0);
+  } else if (pool === "new") {
+    candidates = words.filter(w => newSet.has(w.id));
+  } else if (pool === "category") {
+    candidates = words.filter(w => String(w.cat || "").trim() === cat);
+  }
 
   queue = shuffle(candidates);
 }
@@ -105,7 +182,6 @@ function buildQueue() {
 function pickQuestion() {
   const sig = poolSignature();
 
-  // 1) 使用者切換 2) 模式/出題範圍切換 3) 題庫變動 4) 錯題數變動 → 重建 queue
   if (sig !== currentPoolSig || queue.length === 0) {
     currentPoolSig = sig;
     buildQueue();
@@ -116,6 +192,14 @@ function pickQuestion() {
 }
 
 // ====== 統計顯示 ======
+function poolLabel() {
+  if (pool === "all") return "全部";
+  if (pool === "wrong") return "錯題本";
+  if (pool === "new") return "新學";
+  if (pool === "category") return `分類：${selectedCat || "（未選）"}`;
+  return pool;
+}
+
 function renderStats() {
   const s = loadStats();
   const acc = s.total ? Math.round((s.correct / s.total) * 100) : 0;
@@ -123,13 +207,42 @@ function renderStats() {
   const wrong = loadWrongMap();
   const wrongCount = Object.values(wrong).filter(n => n > 0).length;
 
+  const newSet = loadNewSet();
+  const newCount = newSet.size;
+
   const kidName = (KID_OPTIONS.find(k => k.id === kidId)?.name) || kidId;
 
   el("statsText").textContent =
-    `使用者：${kidName}｜已作答 ${s.total} 題｜正確 ${s.correct}｜正確率 ${acc}%｜錯題數 ${wrongCount}`;
+    `使用者：${kidName}｜範圍：${poolLabel()}｜新學：${newCount}｜已作答 ${s.total} 題｜正確 ${s.correct}｜正確率 ${acc}%｜錯題數 ${wrongCount}`;
 }
 
 // ====== 題目呈現 ======
+function setNextButtonEnabled(enabled) {
+  const btn = el("btnNext");
+  if (!btn) return;
+  btn.disabled = !enabled;
+  btn.style.opacity = enabled ? "1" : "0.6";
+  btn.style.cursor = enabled ? "pointer" : "not-allowed";
+}
+
+function lockAnswerUI() {
+  document.querySelectorAll(".opt").forEach(btn => btn.disabled = true);
+  const input = document.querySelector("#typeInput");
+  const submit = document.querySelector("#btnSubmit");
+  if (input) input.disabled = true;
+  if (submit) submit.disabled = true;
+}
+
+function updateNewButtonUI() {
+  const btn = el("btnToggleNew");
+  if (!btn || !current) return;
+
+  const newSet = loadNewSet();
+  const isNew = newSet.has(current.id);
+
+  btn.textContent = isNew ? "⭐ 已加入" : "⭐ 新學";
+}
+
 function renderQuestion(q) {
   current = q;
 
@@ -148,30 +261,12 @@ function renderQuestion(q) {
   if (mode === "mc") renderMultipleChoice(area, q);
   else renderTyping(area, q);
 
+  updateNewButtonUI();
   renderStats();
-
-  // 下一題按鈕預設：可按
   setNextButtonEnabled(true);
 }
 
-// 下一題按鈕：答對自動跳題，所以答對時把它暫時鎖一下（避免連點跳兩題）
-function setNextButtonEnabled(enabled) {
-  const btn = el("btnNext");
-  if (!btn) return;
-  btn.disabled = !enabled;
-  btn.style.opacity = enabled ? "1" : "0.6";
-  btn.style.cursor = enabled ? "pointer" : "not-allowed";
-}
-
-function lockAnswerUI() {
-  document.querySelectorAll(".opt").forEach(btn => btn.disabled = true);
-  const input = document.querySelector("#typeInput");
-  const submit = document.querySelector("#btnSubmit");
-  if (input) input.disabled = true;
-  if (submit) submit.disabled = true;
-}
-
-// ====== 錯題紀錄規則 ======
+// ====== 錯題紀錄 ======
 function markWrong(q) {
   const wrong = loadWrongMap();
   wrong[q.id] = (wrong[q.id] || 0) + 1;
@@ -180,7 +275,6 @@ function markWrong(q) {
 
 function markCorrect(q) {
   const wrong = loadWrongMap();
-  // 你原本是「答對就清零」：保留此行為
   if (wrong[q.id]) wrong[q.id] = 0;
   saveWrongMap(wrong);
 }
@@ -189,7 +283,6 @@ function markCorrect(q) {
 function showResult({ isCorrect, correctEn, userAnswer = null }) {
   lockAnswerUI();
 
-  // 統計
   const s = loadStats();
   s.total += 1;
   if (isCorrect) s.correct += 1;
@@ -205,26 +298,16 @@ function showResult({ isCorrect, correctEn, userAnswer = null }) {
   el("resultArea").innerHTML = `${badge}${reveal}`;
   renderStats();
 
-  // ✅ 你要的跳題邏輯：
-  // - 答對：自動下一題
-  // - 答錯：不自動，等你按「下一題」
   if (isCorrect && AUTO_NEXT_ON_CORRECT) {
-    // 避免雙擊造成跳兩題：先暫時鎖下一題按鈕
     setNextButtonEnabled(false);
-
-    // 給小孩一點時間看到「正確」與答案，再跳題（可自行調整 500~1200ms）
-    setTimeout(() => {
-      nextQuestion();
-    }, 700);
+    setTimeout(() => nextQuestion(), AUTO_NEXT_DELAY_MS);
   } else {
-    // 答錯：維持按鈕可按，讓你手動下一題
     setNextButtonEnabled(true);
   }
 }
 
-// ====== 出題模式：選擇題 ======
+// ====== 出題：選擇題 ======
 function renderMultipleChoice(container, q) {
-  // 干擾選項：至少需要 3 個其它單字
   const others = words.filter(w => w.id !== q.id).map(w => w.en);
   const distractors = shuffle(others).slice(0, 3);
   const options = shuffle([q.en, ...distractors]);
@@ -240,7 +323,6 @@ function renderMultipleChoice(container, q) {
 
     btn.onclick = () => {
       const isCorrect = opt.toLowerCase().trim() === q.en.toLowerCase().trim();
-
       if (isCorrect) markCorrect(q);
       else markWrong(q);
 
@@ -253,7 +335,7 @@ function renderMultipleChoice(container, q) {
   container.appendChild(wrap);
 }
 
-// ====== 出題模式：輸入題 ======
+// ====== 出題：輸入題 ======
 function renderTyping(container, q) {
   const box = document.createElement("div");
   box.className = "typebox";
@@ -292,100 +374,128 @@ function renderTyping(container, q) {
   container.appendChild(box);
 }
 
-// ====== 下一題（核心流程） ======
+// ====== 下一題 ======
 function nextQuestion() {
-  const q = pickQuestion();
+  // 分類 UI 依 pool 顯示/更新
+  refreshCategorySelectUI();
 
+  const q = pickQuestion();
   if (!q) {
     el("answerArea").innerHTML = "";
     el("resultArea").innerHTML =
       `<span class="badge no">⚠️ 目前沒有可練習的題目</span>
-       <div class="reveal">如果你選了「錯題本」，但目前錯題數是 0，就會出現這個提示。</div>`;
+       <div class="reveal">
+         可能原因：<br>
+         • 你選了「錯題本」但錯題數是 0<br>
+         • 你選了「新學」但尚未加入新學單字<br>
+         • 你選了「分類」但該分類目前沒有單字<br>
+       </div>`;
     setNextButtonEnabled(true);
+    renderStats();
     return;
   }
 
   renderQuestion(q);
 }
 
+// ====== 切換小孩/範圍時重建 ======
+function resetQueue() {
+  queue = [];
+  currentPoolSig = "";
+}
+
 // ====== 初始化 ======
 async function init() {
-  // 讀取 words
   const res = await fetch(WORDS_URL, { cache: "no-store" });
   words = await res.json();
+
+  // 需要 cat 欄位（方案A），但如果有漏也不致命：只是分類會少
   words = (words || []).filter(w => w && w.id && w.zh && w.en && w.img);
 
-  // 基本檢查：選擇題至少需要 4 筆
   if (words.length < 4) {
     el("resultArea").innerHTML =
       `<span class="badge no">⚠️ 單字至少建議 4 個以上（選擇題需要干擾選項）</span>`;
   }
 
-  // 讓 voice list 在部分瀏覽器先初始化
   if ("speechSynthesis" in window) window.speechSynthesis.getVoices();
 
-  // 1) 使用者選單
+  // 1) 使用者選單（你已經有）
   const kidSelect = el("kidSelect");
   if (kidSelect) {
     kidSelect.value = kidId;
     kidSelect.addEventListener("change", (e) => {
       kidId = e.target.value;
       localStorage.setItem("vocab_kid_active", kidId);
-
-      // 切換小孩：重建 queue，避免混題
-      queue = [];
-      currentPoolSig = "";
-
+      resetQueue();
       renderStats();
       nextQuestion();
     });
   }
 
-  // 2) 模式切換
+  // 2) 模式
   el("modeSelect").addEventListener("change", (e) => {
     mode = e.target.value;
-
-    // 模式變：重建 queue
-    queue = [];
-    currentPoolSig = "";
-
+    resetQueue();
     nextQuestion();
   });
 
-  // 3) 出題範圍切換
+  // 3) 出題範圍
   el("poolSelect").addEventListener("change", (e) => {
     pool = e.target.value;
-
-    // 範圍變：重建 queue
-    queue = [];
-    currentPoolSig = "";
-
+    resetQueue();
+    refreshCategorySelectUI();
     nextQuestion();
   });
 
-  // 4) 下一題
+  // 4) 分類下拉
+  const catSelect = el("catSelect");
+  if (catSelect) {
+    catSelect.addEventListener("change", (e) => {
+      selectedCat = e.target.value;
+      resetQueue();
+      nextQuestion();
+    });
+  }
+
+  // 5) 下一題
   el("btnNext").addEventListener("click", () => nextQuestion());
 
-  // 5) 發音
+  // 6) 發音
   el("btnSpeak").addEventListener("click", () => {
     if (!current) return;
     speak(current.en);
   });
 
-  // 6) 清除錯題：只清「目前選擇的那個小孩」
+  // 7) ⭐ 新學（加入/移除）
+  const btnToggleNew = el("btnToggleNew");
+  if (btnToggleNew) {
+    btnToggleNew.addEventListener("click", () => {
+      if (!current) return;
+      const set = loadNewSet();
+      if (set.has(current.id)) set.delete(current.id);
+      else set.add(current.id);
+      saveNewSet(set);
+
+      // 若現在正在「新學」範圍，新增/移除會改變 candidates → 重建 queue
+      resetQueue();
+      updateNewButtonUI();
+      renderStats();
+    });
+  }
+
+  // 8) 清除錯題（只清目前小孩）
   el("btnResetWrong").addEventListener("click", () => {
     localStorage.removeItem(LS_WRONG_KEY());
     localStorage.removeItem(LS_STATS_KEY());
-
-    // 清除後可能影響錯題本的題目數：重建 queue
-    queue = [];
-    currentPoolSig = "";
-
+    resetQueue();
     renderStats();
     nextQuestion();
   });
 
-  // 先出第一題
+  // 初始分類 UI
+  refreshCategorySelectUI();
+
+  // 初始出題
   renderStats();
   nextQuestion();
 }
