@@ -28,13 +28,21 @@
         </select>
       </label>
 
-      <label class="pill">
-        出題範圍
-        <select id="poolSelect">
-          <option value="all">全部</option>
-          <option value="wrong">錯題本</option>
-        </select>
-      </label>
+     <label class="pill">
+  出題範圍
+  <select id="poolSelect">
+    <option value="all">全部</option>
+    <option value="wrong">錯題本</option>
+    <option value="new">新學</option>
+    <option value="category">分類</option>
+  </select>
+</label>
+
+<label class="pill" id="catPill" style="display:none;">
+  分類
+  <select id="catSelect"></select>
+</label>
+
 
       <button id="btnResetWrong" class="btn ghost" title="清除錯題紀錄">清除錯題</button>
     </div>
@@ -43,9 +51,13 @@
   <main class="wrap">
     <section class="card">
       <div class="q-head">
-        <div class="q-zh" id="zhText">載入中…</div>
-        <button id="btnSpeak" class="btn" type="button">🔊 發音</button>
-      </div>
+  <div class="q-zh" id="zhText">載入中…</div>
+  <div style="display:flex; gap:10px; align-items:center;">
+    <button id="btnToggleNew" class="btn" type="button" title="加入/移除新學清單">⭐ 新學</button>
+    <button id="btnSpeak" class="btn" type="button">🔊 發音</button>
+  </div>
+</div>
+
 
       <div class="imgbox">
         <img id="img" alt="題目圖片" />
