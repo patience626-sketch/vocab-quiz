@@ -48,3 +48,10 @@ body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans T
 .reveal strong{color:var(--text)}
 .footer{margin-top:16px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
 .stats{color:var(--muted);font-weight:700}
+
+a.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
