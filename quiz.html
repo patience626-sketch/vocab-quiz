@@ -8,39 +8,39 @@
 </head>
 
 <body class="page-quiz">
-  <div class="quizWrap">
-    <header class="quizTop">
-      <div class="statusPill" id="statusPill">準備中…</div>
-      <a class="topLink" href="./index.html">⚙️ 回首頁改設定</a>
-    </header>
-
+  <div class="quizShell">
     <main class="quizCard">
-      <div class="qBox">
-        <div class="qTitle" id="qZh">載入中…</div>
-
-        <div class="imgFrame">
-          <img id="qImg" class="qImg" alt="" />
-        </div>
-
-        <div class="audioRow">
-          <button id="btnSpeak" class="btnAudio">🔊 發音</button>
-          <a id="btnOxford" class="btnOxford" href="#" target="_blank" rel="noopener">📘 Oxford</a>
-        </div>
-
-        <div id="mcArea" class="choiceGrid"></div>
-
-        <div id="typeArea" class="typeArea hidden">
-          <input id="typeInput" class="typeInput" placeholder="Key in 英文（不分大小寫）" />
-          <button id="btnCheck" class="btnCheck">送出</button>
-        </div>
-
-        <div id="result" class="resultLine"></div>
-
-        <div class="navRow">
-          <button id="btnNext" class="btnNext hidden">下一題</button>
-          <button id="btnRetry" class="btnRetry hidden">再試一次</button>
-        </div>
+      <div class="qHeader">
+        <div id="statusPill" class="pill">準備中…</div>
+        <a class="miniBack" href="./index.html">⚙️ 回首頁</a>
       </div>
+
+      <div id="qZh" class="bigPrompt">載入中…</div>
+
+      <div class="imgWrap">
+        <img id="qImg" class="quizImg" alt="" />
+      </div>
+
+      <div class="audioBar">
+        <button id="btnSpeak" class="audioBtn">🔊 發音</button>
+        <a id="btnOxford" class="audioLink" href="#" target="_blank" rel="noopener">Oxford</a>
+      </div>
+
+      <div id="mcArea" class="choiceGrid"></div>
+
+      <div id="typeArea" class="typeWrap hidden">
+        <input id="typeInput" class="typeInput" placeholder="Key in 英文（不分大小寫）" />
+        <button id="btnCheck" class="sendBtn">送出</button>
+      </div>
+
+      <div id="result" class="result"></div>
+
+      <div class="bottomRow">
+        <button id="btnRetry" class="ghostSmall hidden">再試一次</button>
+        <button id="btnNext" class="primarySmall hidden">下一題</button>
+      </div>
+
+      <div class="note">答對自動下一題；答錯會提示，並記入錯題本。</div>
     </main>
   </div>
 
