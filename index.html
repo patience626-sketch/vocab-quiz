@@ -3,53 +3,201 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>單字測驗</title>
+  <title>單字測驗入口</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 
 <body>
   <div class="wrap">
-    <main class="card quizOnly">
-      <div class="metaRow">
-        <div id="progress" class="pill">準備中…</div>
+    <header class="topbarSimple">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">Aa</div>
+        <div class="brandText">
+          <div class="brandTitle">單字測驗入口</div>
+          <div class="brandSub">選好條件 → 開始測驗</div>
+        </div>
       </div>
+    </header>
 
-      <section class="qWrap">
-        <div class="imgBox">
-          <img id="qImg" class="qImgRect" alt="" />
-        </div>
+    <main class="card entranceCard">
+      <div class="entranceLayout">
 
-        <div class="qMain">
-          <div class="qTop">
-            <div>
-              <div class="label">中文</div>
-              <div id="qZh" class="zhBig">載入中…</div>
-            </div>
-            <button id="btnSpeak" class="btn speak">🔊 發音</button>
+        <section class="entrancePanel">
+          <div class="panelTitle">🧩 測驗設定</div>
+
+          <div class="formGrid2">
+            <label class="field">
+              <div class="fieldLabel">選擇小孩</div>
+              <div class="iconSelect">
+                <span class="i">👧</span>
+                <select id="kid">
+                  <option value="xigua">西瓜</option>
+                  <option value="youzi">柚子</option>
+                  <option value="xiaole">小樂</option>
+                  <option value="apu">阿噗</option>
+                  <option value="anan">安安</option>
+                </select>
+              </div>
+            </label>
+
+            <label class="field">
+              <div class="fieldLabel">題目來源</div>
+              <div class="iconSelect">
+                <span class="i">🗂️</span>
+                <select id="pool">
+                  <option value="all" selected>單字分類（全部）</option>
+                  <option value="new">新加入（新學）</option>
+                  <option value="wrong">錯題本</option>
+                </select>
+              </div>
+            </label>
+
+            <label class="field">
+              <div class="fieldLabel">分類（可選）</div>
+              <div class="iconSelect">
+                <span class="i">🏷️</span>
+                <select id="cat">
+                  <option value="">全部分類</option>
+                </select>
+              </div>
+            </label>
+
+            <label class="field">
+              <div class="fieldLabel">避開近幾天出過的題目</div>
+              <div class="iconSelect">
+                <span class="i">🧠</span>
+                <select id="avoidDays">
+                  <option value="0">不避開</option>
+                  <option value="1">1 天</option>
+                  <option value="3" selected>3 天</option>
+                  <option value="5">5 天</option>
+                  <option value="7">7 天</option>
+                </select>
+              </div>
+            </label>
+
+            <label class="field">
+              <div class="fieldLabel">題數</div>
+              <div class="iconSelect">
+                <span class="i">🎯</span>
+                <select id="numQ">
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20" selected>20</option>
+                  <option value="30">30</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
+            </label>
+
+            <label class="field">
+              <div class="fieldLabel">測驗方式</div>
+              <div class="iconSelect">
+                <span class="i">⌨️</span>
+                <select id="mode">
+                  <option value="mc" selected>選擇題</option>
+                  <option value="type">Key in</option>
+                </select>
+              </div>
+            </label>
           </div>
 
-          <div id="mcArea" class="choicesBig"></div>
-
-          <div id="typeArea" class="typeRow hidden">
-            <input id="typeInput" class="typeInput" placeholder="Key in 英文（不分大小寫）" />
-            <button id="btnCheck" class="btn primary">送出</button>
+          <div class="btnBar">
+            <button id="btnGo" class="btn primary btnBig">🚀 開始測驗</button>
+            <a class="btn ghost btnBig" href="./index.html">直接進測驗（用上次設定）</a>
           </div>
 
-          <div id="result" class="result"></div>
-
-          <div class="navRow">
-            <button id="btnNext" class="btn primary hidden">下一題</button>
+          <div class="hint">
+            工具在下方：後台單字 / 產出 words.json
           </div>
-        </div>
-      </section>
+        </section>
+
+        <section class="entrancePanel toolPanel">
+          <div class="panelTitle">🧰 工具區</div>
+          <div class="toolLinks">
+            <a class="linkBtn" href="./admin.html" target="_blank" rel="noopener">🔧 後台單字</a>
+            <a class="linkBtn" href="./tool.html" target="_blank" rel="noopener">📥 產出 words.json 工具</a>
+          </div>
+
+          <div class="bottomLinks" style="margin-top:14px;">
+            <a class="linkBtn" href="./home.html">🏠 入口</a>
+            <a class="linkBtn" href="./index.html">🧩 測驗</a>
+          </div>
+        </section>
+
+      </div>
     </main>
-
-    <!-- ✅ 連結放最外層 footer（避免被任何元素覆蓋） -->
-    <footer class="bottomLinks bottomLinksFixed">
-      <a class="linkBtn" href="./home.html">🏠 回入口</a>
-    </footer>
   </div>
 
-  <script src="./app.js"></script>
+<script>
+  const SETTINGS_KEY = "vocab_settings_v2";
+  const CAT_OVERRIDE_KEY = "vocab_cat_override_v1";
+  const $ = (id) => document.getElementById(id);
+  const norm = (s) => String(s || "").trim();
+
+  function todayKey(){
+    const d = new Date();
+    const y = d.getFullYear();
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const day = String(d.getDate()).padStart(2,"0");
+    return `${y}-${m}-${day}`;
+  }
+
+  function loadSettings(){
+    try{
+      const s = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
+      if (s.kid) $("kid").value = s.kid;
+      if (s.pool) $("pool").value = s.pool;
+      if (typeof s.avoidDays !== "undefined") $("avoidDays").value = String(s.avoidDays);
+      if (s.numQ) $("numQ").value = String(s.numQ);
+      if (s.mode) $("mode").value = s.mode;
+      if (typeof s.cat !== "undefined") $("cat").value = s.cat || "";
+    }catch{}
+  }
+
+  function saveSettings(){
+    const s = {
+      kid: $("kid").value,
+      pool: $("pool").value,
+      avoidDays: Number($("avoidDays").value),
+      numQ: Number($("numQ").value),
+      mode: $("mode").value,
+      cat: $("cat").value || "",
+      savedAt: todayKey(),
+    };
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+  }
+
+  function loadCatOverride(){
+    try{ return JSON.parse(localStorage.getItem(CAT_OVERRIDE_KEY) || "{}"); }
+    catch{ return {}; }
+  }
+
+  async function loadCats(){
+    try{
+      const res = await fetch("./words.json", {cache:"no-store"});
+      const words = await res.json();
+      const ov = loadCatOverride();
+      const set = new Set();
+
+      for (const w of (words||[])){
+        if (!w || !w.id) continue;
+        const c = norm(ov[w.id] ?? w.cat ?? "");
+        if (c) set.add(c);
+      }
+      const cats = Array.from(set).sort((a,b)=>a.localeCompare(b,"zh-Hant"));
+      $("cat").innerHTML = `<option value="">全部分類</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
+    }catch{
+      $("cat").innerHTML = `<option value="">全部分類</option>`;
+    }
+  }
+
+  $("btnGo").addEventListener("click", () => {
+    saveSettings();
+    location.href = "./index.html";
+  });
+
+  loadCats().then(loadSettings);
+</script>
 </body>
 </html>
