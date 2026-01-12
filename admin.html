@@ -3,29 +3,26 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>單字後台（新學標註 / 分類編輯）</title>
+  <title>單字後台（新學/分類/備份）</title>
   <style>
-    :root{
-      --bg:#f6f7fb;--card:#fff;--text:#111827;--muted:#6b7280;--bd:#e5e7eb;
-      --dark:#111827;
-    }
+    :root{--bg:#f6f7fb;--card:#fff;--text:#111827;--muted:#6b7280;--bd:#e5e7eb;--dark:#111827}
     *{box-sizing:border-box}
     body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:var(--bg);color:var(--text)}
-    .wrap{max-width:1120px;margin:18px auto;padding:0 14px}
+    .wrap{max-width:1180px;margin:18px auto;padding:0 14px}
     .card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px}
     h1{margin:0 0 10px;font-size:18px}
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .pill{display:flex;gap:8px;align-items:center;font-weight:900;border:1px solid var(--bd);background:#fff;border-radius:999px;padding:8px 12px}
-    input,select{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;font-size:14px}
-    .btn{border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:900}
+    input,select{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;font-size:14px;background:#fff}
+    .btn{border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
     .btn.primary{background:var(--dark);color:#fff;border-color:var(--dark)}
-    .btn.danger{background:#fff;border-color:#fecaca;color:#991b1b}
-    .muted{color:var(--muted);font-weight:700}
+    .btn.danger{border-color:#fecaca;color:#991b1b}
+    .btn.toggle.on{background:var(--dark);color:#fff;border-color:var(--dark)}
     .topnote{margin-top:8px;font-size:13px;color:var(--muted);font-weight:700;line-height:1.6}
     .count{font-weight:900;color:#111827}
     .grid{display:grid;grid-template-columns:repeat(1,1fr);gap:10px;margin-top:12px}
     @media(min-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
-    @media(min-width:1040px){.grid{grid-template-columns:repeat(3,1fr)}}
+    @media(min-width:1060px){.grid{grid-template-columns:repeat(3,1fr)}}
     .item{border:1px solid var(--bd);border-radius:16px;padding:10px;display:flex;gap:10px;align-items:flex-start;background:#fff}
     .img{width:72px;height:72px;border-radius:12px;border:1px solid var(--bd);object-fit:cover;background:#f3f4f6}
     .meta{flex:1;min-width:0}
@@ -33,22 +30,22 @@
     .en{margin:3px 0 0;font-weight:800;word-break:break-word}
     .tag{margin-top:6px;display:inline-block;font-size:12px;font-weight:900;color:#374151;background:#f3f4f6;border:1px solid var(--bd);padding:3px 8px;border-radius:999px}
     .idline{margin-top:6px;font-size:12px;color:var(--muted);font-weight:800;word-break:break-word}
-    .actions{display:flex;flex-direction:column;gap:8px;align-items:stretch;min-width:110px}
+    .actions{display:flex;flex-direction:column;gap:8px;align-items:stretch;min-width:120px}
     .star{border:1px solid var(--bd);border-radius:12px;padding:8px 10px;font-weight:900;background:#fff;cursor:pointer;white-space:nowrap}
     .star.on{background:var(--dark);color:#fff;border-color:var(--dark)}
     .catbox{display:flex;gap:8px;align-items:center;margin-top:8px}
     .catbox select{flex:1}
-    .hint{font-size:12px;color:var(--muted);font-weight:700;margin-top:6px}
-    .status{margin-top:8px;font-size:13px;font-weight:800}
+    .status{margin-top:8px;font-size:13px;font-weight:900}
     .ok{color:#065f46}
     .no{color:#9f1239}
     .divider{height:1px;background:var(--bd);margin:10px 0}
+    .hint{font-size:12px;color:var(--muted);font-weight:800}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>單字後台（新學 ⭐ / 分類編輯）</h1>
+      <h1>單字後台（新學 ⭐ / 分類 / 備份）</h1>
 
       <div class="row">
         <div class="pill">
@@ -69,33 +66,32 @@
           </select>
         </div>
 
-        <input id="q" placeholder="搜尋：中文 / 英文 / id / 分類" style="flex:1;min-width:240px;" />
+        <input id="q" placeholder="搜尋：中文 / 英文 / id" style="flex:1;min-width:240px;" />
 
+        <button class="btn toggle" id="btnOnlyUncat" type="button">只看未分類</button>
+        <button class="btn toggle" id="btnOnlyNew" type="button">只看新學</button>
+
+        <button class="btn" id="btnBatchNew" type="button">批次加入新學</button>
         <button class="btn" id="btnClearNew" type="button">清空此小孩新學</button>
         <button class="btn" id="btnExportNew" type="button">匯出新學清單</button>
+
         <button class="btn" id="btnBatchCat" type="button">批次改分類</button>
         <button class="btn primary" id="btnExportWords" type="button">匯出新版 words.json</button>
         <button class="btn danger" id="btnClearCatOverride" type="button">清空分類覆寫</button>
+
+        <button class="btn" id="btnBackupAll" type="button">備份</button>
+        <label class="btn" for="fileRestore">還原<input id="fileRestore" type="file" accept=".json" style="display:none"></label>
       </div>
 
       <div class="topnote">
         使用者 <span id="kidName" class="count"></span> 的新學數：<span id="newCount" class="count">0</span>
         ｜目前顯示：<span id="shownCount" class="count">0</span> / <span id="totalCount" class="count">0</span>
         <br/>
-        分類編輯會先存在此瀏覽器（localStorage）。要讓測驗頁永久吃到新分類：請按「匯出新版 words.json」→ 上傳覆蓋 repo 的 <span class="count">words.json</span>。
+        <span class="hint">分類只允許下拉選（避免打錯字）。要讓測驗頁永久吃到新分類：按「匯出新版 words.json」→ 回 repo 覆蓋上傳 words.json。</span>
       </div>
 
       <div id="status" class="status"></div>
       <div class="divider"></div>
-
-      <div class="row" style="margin-top:0;">
-        <div class="pill">
-          新增分類
-          <input id="newCatName" placeholder="例如：水果" style="width:160px;" />
-          <button class="btn" id="btnAddCat" type="button">加入</button>
-        </div>
-        <div class="hint">加入後會出現在「每筆分類下拉」與「篩選分類」中。</div>
-      </div>
 
       <div id="grid" class="grid"></div>
     </div>
@@ -105,50 +101,10 @@
   const WORDS_URL = "./words.json";
   const $ = (id) => document.getElementById(id);
 
-  // ✅ 你指定的分類（順序就是顯示順序，可自行改）
-  const FIXED_CATEGORIES = [
-    "水果","動物","交通工具","食物","顏色","身體","家庭","學校用品","自然","運動","職業","其他"
-  ];
+  const FIXED_CATEGORIES = ["水果","動物","交通工具","食物","顏色","身體","家庭","學校用品","自然","運動","職業","其他"];
+  const FIXED_SET = new Set(FIXED_CATEGORIES);
 
-  // ✅ 額外新增分類（你在後台加入的）
-  function LS_EXTRA_CAT_KEY(){ return "vocab_extra_categories_v1"; }
-  function loadExtraCats(){
-    try { return JSON.parse(localStorage.getItem(LS_EXTRA_CAT_KEY()) || "[]"); }
-    catch { return []; }
-  }
-  function saveExtraCats(arr){
-    localStorage.setItem(LS_EXTRA_CAT_KEY(), JSON.stringify(arr));
-  }
-
-  // ✅ 新學清單（每個小孩各自）
-  let kidId = localStorage.getItem("vocab_kid_active") || "xigua";
-  function LS_NEW_KEY(){ return `vocab_new_v1_${kidId}`; }
-  function loadNewSet(){
-    try{
-      const arr = JSON.parse(localStorage.getItem(LS_NEW_KEY()) || "[]");
-      return new Set(Array.isArray(arr) ? arr : []);
-    }catch{
-      return new Set();
-    }
-  }
-  function saveNewSet(set){
-    localStorage.setItem(LS_NEW_KEY(), JSON.stringify(Array.from(set)));
-  }
-
-  // ✅ 分類覆寫（全站共用）：{ wordId: "新分類" }
-  function LS_CAT_KEY(){ return "vocab_cat_override_v1"; }
-  function loadCatOverride(){
-    try { return JSON.parse(localStorage.getItem(LS_CAT_KEY()) || "{}"); }
-    catch { return {}; }
-  }
-  function saveCatOverride(map){
-    localStorage.setItem(LS_CAT_KEY(), JSON.stringify(map));
-  }
-
-  // 題庫
-  let words = [];
-
-  // ====== helpers ======
+  function norm(s){ return String(s||"").trim(); }
   function escapeHtml(s){
     return String(s).replace(/[&<>"']/g, m => ({
       "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"
@@ -159,20 +115,87 @@
   function showNo(msg){ $("status").innerHTML = `<span class="no">⚠️ ${msg}</span>`; }
   function clearStatus(){ $("status").innerHTML = ""; }
 
-  function effectiveCatOf(w, catOv){
-    const c = (catOv[w.id] ?? w.cat ?? "");
-    return String(c).trim();
+  // kids
+  let kidId = localStorage.getItem("vocab_kid_active") || "xigua";
+  function LS_NEW_KEY(){ return `vocab_new_v1_${kidId}`; }
+  function LS_WRONG_KEY(){ return `vocab_wrong_v1_${kidId}`; }
+  function LS_SEEN_KEY(){ return `vocab_seen_v1_${kidId}`; }
+
+  function loadIdSet(key){
+    try{
+      const arr = JSON.parse(localStorage.getItem(key) || "[]");
+      return new Set(Array.isArray(arr) ? arr : []);
+    }catch{ return new Set(); }
+  }
+  function saveIdSet(key,set){
+    localStorage.setItem(key, JSON.stringify(Array.from(set)));
   }
 
-  function matches(w, q, effectiveCat){
-    q = (q||"").trim().toLowerCase();
+  // category override (global)
+  const LS_CAT_KEY = "vocab_cat_override_v1";
+  function loadCatOverride(){
+    try { return JSON.parse(localStorage.getItem(LS_CAT_KEY) || "{}"); }
+    catch { return {}; }
+  }
+  function saveCatOverride(map){
+    localStorage.setItem(LS_CAT_KEY, JSON.stringify(map));
+  }
+  function normalizeCat(raw){
+    const c = norm(raw);
+    return FIXED_SET.has(c) ? c : "";
+  }
+  function effectiveCatOf(w, catOv){
+    return normalizeCat(catOv[w.id] ?? w.cat ?? "");
+  }
+
+  // toggle filters
+  const LS_ADMIN_FILTERS = "vocab_admin_filters_v2";
+  let onlyUncat=false, onlyNew=false;
+  function loadAdminFilters(){
+    try{
+      const o = JSON.parse(localStorage.getItem(LS_ADMIN_FILTERS) || "{}");
+      onlyUncat=!!o.onlyUncat; onlyNew=!!o.onlyNew;
+    }catch{ onlyUncat=false; onlyNew=false; }
+  }
+  function saveAdminFilters(){
+    localStorage.setItem(LS_ADMIN_FILTERS, JSON.stringify({onlyUncat, onlyNew}));
+  }
+  function updateToggleUI(){
+    $("btnOnlyUncat").classList.toggle("on", onlyUncat);
+    $("btnOnlyNew").classList.toggle("on", onlyNew);
+  }
+
+  // words
+  let words = [];
+
+  function renderCatFilter(){
+    const sel = $("catFilter");
+    const keep = sel.value || "";
+    sel.innerHTML = `<option value="">全部</option>` + FIXED_CATEGORIES.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+    if ([...sel.options].some(o => o.value === keep)) sel.value = keep;
+  }
+
+  function matches(w, q){
+    q = norm(q).toLowerCase();
     if (!q) return true;
-    return (
-      String(w.id||"").toLowerCase().includes(q) ||
-      String(w.zh||"").toLowerCase().includes(q) ||
-      String(w.en||"").toLowerCase().includes(q) ||
-      String(effectiveCat||"").toLowerCase().includes(q)
-    );
+    return String(w.id||"").toLowerCase().includes(q)
+      || String(w.zh||"").toLowerCase().includes(q)
+      || String(w.en||"").toLowerCase().includes(q);
+  }
+
+  function getFilteredList(){
+    const q = $("q").value || "";
+    const filterCat = $("catFilter").value || "";
+    const catOv = loadCatOverride();
+    const newSet = loadIdSet(LS_NEW_KEY());
+
+    return words.filter(w => {
+      const ec = effectiveCatOf(w, catOv);
+      if (filterCat && ec !== filterCat) return false;
+      if (onlyUncat && !!ec) return false;
+      if (onlyNew && !newSet.has(w.id)) return false;
+      return matches(w, q);
+    });
   }
 
   function download(filename, text) {
@@ -187,72 +210,10 @@
     URL.revokeObjectURL(url);
   }
 
-  // ====== categories ======
-  function uniqCats(){
-    const fromData = new Set();
-    const catOv = loadCatOverride();
-
-    for (const w of words) {
-      const c = effectiveCatOf(w, catOv);
-      if (c) fromData.add(c);
-    }
-
-    const extra = loadExtraCats().map(x => String(x).trim()).filter(Boolean);
-    const fixed = FIXED_CATEGORIES.map(x => String(x).trim()).filter(Boolean);
-
-    const fixedSet = new Set(fixed);
-    const out = [];
-
-    // 先放固定分類順序
-    for (const c of fixed) out.push(c);
-
-    // 再放你新增的分類（保持新增順序，但避免重複）
-    for (const c of extra) {
-      if (!fixedSet.has(c) && !out.includes(c)) out.push(c);
-    }
-
-    // 最後補上資料裡有但前兩者沒列到的（避免漏）
-    const known = new Set(out);
-    const extras = Array.from(fromData)
-      .filter(c => !known.has(c))
-      .sort((a,b)=>a.localeCompare(b, "zh-Hant"));
-
-    return out.concat(extras);
-  }
-
-  function renderCatFilter(){
-    const sel = $("catFilter");
-    const keep = sel.value || "";
-    sel.innerHTML = `<option value="">全部</option>`;
-    for (const c of uniqCats()){
-      const opt = document.createElement("option");
-      opt.value = c;
-      opt.textContent = c;
-      sel.appendChild(opt);
-    }
-    if ([...sel.options].some(o => o.value === keep)) sel.value = keep;
-  }
-
-  // ====== main render ======
-  function getFilteredList(){
-    const q = $("q").value || "";
-    const filterCat = $("catFilter").value || "";
-    const catOv = loadCatOverride();
-
-    const list = words.filter(w => {
-      const ec = effectiveCatOf(w, catOv);
-      if (filterCat && ec !== filterCat) return false;
-      return matches(w, q, ec);
-    });
-
-    return list;
-  }
-
   function render(){
     const grid = $("grid");
-    const newSet = loadNewSet();
+    const newSet = loadIdSet(LS_NEW_KEY());
     const catOv = loadCatOverride();
-
     const filtered = getFilteredList();
 
     $("kidName").textContent = $("kidSelect").selectedOptions[0]?.textContent || kidId;
@@ -261,9 +222,9 @@
     $("totalCount").textContent = words.length;
 
     renderCatFilter();
+    updateToggleUI();
 
     grid.innerHTML = "";
-    const cats = uniqCats(); // 用於每筆的分類下拉
 
     for (const w of filtered){
       const item = document.createElement("div");
@@ -281,28 +242,26 @@
       const ec = effectiveCatOf(w, catOv);
 
       meta.innerHTML = `
-        <p class="zh">${escapeHtml(w.zh || "")}</p>
-        <div class="en">${escapeHtml(w.en || "")}</div>
+        <p class="zh">${escapeHtml(w.zh||"")}</p>
+        <div class="en">${escapeHtml(w.en||"")}</div>
         <span class="tag">${escapeHtml(ec || "未分類")}</span>
-        <div class="idline">id: ${escapeHtml(w.id || "")}</div>
+        <div class="idline">id: ${escapeHtml(w.id||"")}</div>
       `;
 
-      // 分類編輯區（下拉 + 套用）
+      // category editor
       const catBox = document.createElement("div");
       catBox.className = "catbox";
-
       const catSel = document.createElement("select");
-      catSel.innerHTML = `<option value="">（未分類）</option>` + cats.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+      catSel.innerHTML = `<option value="">（未分類）</option>` + FIXED_CATEGORIES.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
       catSel.value = ec;
 
       const btnSaveCat = document.createElement("button");
       btnSaveCat.type = "button";
       btnSaveCat.className = "btn";
       btnSaveCat.textContent = "套用";
-
       btnSaveCat.onclick = () => {
         const map = loadCatOverride();
-        const v = String(catSel.value || "").trim();
+        const v = normalizeCat(catSel.value);
         if (v) map[w.id] = v;
         else delete map[w.id];
         saveCatOverride(map);
@@ -317,87 +276,65 @@
       const actions = document.createElement("div");
       actions.className = "actions";
 
-      // ⭐ 新學
       const star = document.createElement("button");
       star.type = "button";
       const on = newSet.has(w.id);
       star.className = "star" + (on ? " on" : "");
       star.textContent = on ? "⭐ 已加入" : "⭐ 新學";
-
       star.onclick = () => {
-        const s = loadNewSet();
+        const s = loadIdSet(LS_NEW_KEY());
         if (s.has(w.id)) s.delete(w.id);
         else s.add(w.id);
-        saveNewSet(s);
+        saveIdSet(LS_NEW_KEY(), s);
         clearStatus();
         render();
       };
 
       actions.appendChild(star);
-
       item.appendChild(img);
       item.appendChild(meta);
       item.appendChild(actions);
-
       grid.appendChild(item);
-    }
-
-    if (!words.length) {
-      showNo("目前 words.json 沒有資料");
     }
   }
 
-  // ====== actions ======
-  function handleAddCategory(){
-    const v = String($("newCatName").value || "").trim();
-    if (!v) return;
+  // batch add to new
+  function handleBatchNew(){
+    const filtered = getFilteredList();
+    if (!filtered.length) return showNo("目前篩選結果 0 筆，無法批次加入新學");
 
-    const all = uniqCats();
-    if (all.includes(v)) {
-      showNo(`分類「${escapeHtml(v)}」已存在`);
-      $("newCatName").value = "";
-      return;
+    const s = loadIdSet(LS_NEW_KEY());
+    let added = 0;
+    for (const w of filtered){
+      if (!s.has(w.id)){ s.add(w.id); added++; }
     }
-
-    const extra = loadExtraCats();
-    extra.push(v);
-    saveExtraCats(extra);
-
-    $("newCatName").value = "";
-    showOk(`已加入分類：${escapeHtml(v)}`);
+    saveIdSet(LS_NEW_KEY(), s);
+    showOk(`已批次加入新學：新增 ${added} 筆（篩選結果 ${filtered.length} 筆）`);
     render();
   }
 
+  // batch change category
   function handleBatchCat(){
     const filtered = getFilteredList();
-    if (!filtered.length) {
-      showNo("目前篩選結果是 0 筆，無法批次改分類");
-      return;
-    }
+    if (!filtered.length) return showNo("目前篩選結果 0 筆，無法批次改分類");
 
-    const v = prompt("要把『目前篩選結果』全部改成哪個分類？\n例如：水果");
-    if (v === null) return;
-    const cat = String(v).trim();
-    if (!cat) return;
+    const pick = prompt(
+      "要把『目前篩選結果』全部改成哪個分類？\n只能輸入以下其中一個：\n" + FIXED_CATEGORIES.join(" / ")
+    );
+    if (pick === null) return;
 
-    // 若新分類不存在，順便加入 extra（讓下拉馬上看得到）
-    const cats = uniqCats();
-    if (!cats.includes(cat)) {
-      const extra = loadExtraCats();
-      extra.push(cat);
-      saveExtraCats(extra);
-    }
+    const cat = normalizeCat(pick);
+    if (!cat) return showNo("分類不在固定清單內，請照清單輸入（避免打錯字）");
 
     const map = loadCatOverride();
     for (const w of filtered) map[w.id] = cat;
     saveCatOverride(map);
-
     showOk(`已批次套用分類「${escapeHtml(cat)}」到 ${filtered.length} 筆`);
     render();
   }
 
   function handleExportNew(){
-    const set = loadNewSet();
+    const set = loadIdSet(LS_NEW_KEY());
     const payload = {
       kidId,
       kidName: $("kidSelect").selectedOptions[0]?.textContent || kidId,
@@ -409,34 +346,67 @@
   }
 
   function handleExportWords(){
-    const map = loadCatOverride();
-
-    // 合併分類覆寫 → 產出新版 words.json
+    const catOv = loadCatOverride();
     const merged = words.map(w => {
-      const c = String((map[w.id] ?? w.cat ?? "")).trim();
-      return { ...w, cat: c };
+      const cat = effectiveCatOf(w, catOv);
+      return { ...w, cat };
     });
-
     download("words.json", JSON.stringify(merged, null, 2));
     showOk("已下載新版 words.json（請回 repo 覆蓋上傳）");
   }
 
   function handleClearNew(){
     localStorage.removeItem(LS_NEW_KEY());
-    showOk("已清空此小孩的新學");
+    showOk("已清空此小孩新學");
     render();
   }
 
   function handleClearCatOverride(){
-    const ok = confirm("確定要清空『分類覆寫』嗎？\n（會回到 words.json 原本的分類，但不會影響你已下載的檔案）");
+    const ok = confirm("確定要清空『分類覆寫』嗎？（回到 words.json 原本 cat）");
     if (!ok) return;
-    localStorage.removeItem(LS_CAT_KEY());
+    localStorage.removeItem(LS_CAT_KEY);
     showOk("已清空分類覆寫");
     render();
   }
 
-  // ====== init ======
+  function toggleOnlyUncat(){ onlyUncat=!onlyUncat; saveAdminFilters(); clearStatus(); render(); }
+  function toggleOnlyNew(){ onlyNew=!onlyNew; saveAdminFilters(); clearStatus(); render(); }
+
+  // backup/restore
+  function handleBackup(){
+    const backup = { exportedAt: new Date().toISOString(), localStorage: {} };
+    const keys = Object.keys(localStorage).filter(k =>
+      k === "vocab_kid_active" ||
+      k === "vocab_cat_override_v1" ||
+      k.startsWith("vocab_new_v1_") ||
+      k.startsWith("vocab_wrong_v1_") ||
+      k.startsWith("vocab_seen_v1_")
+    );
+    for (const k of keys) backup.localStorage[k] = localStorage.getItem(k);
+    download("vocab-backup.json", JSON.stringify(backup, null, 2));
+    showOk("已下載備份檔 vocab-backup.json");
+  }
+
+  async function handleRestore(e){
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try{
+      const text = await file.text();
+      const data = JSON.parse(text);
+      const map = data?.localStorage || {};
+      for (const [k,v] of Object.entries(map)){
+        if (typeof v === "string") localStorage.setItem(k, v);
+      }
+      alert("還原完成！請重新整理 admin 與測驗頁。");
+    }catch{
+      alert("還原失敗：檔案不是正確備份 JSON");
+    }finally{
+      e.target.value = "";
+    }
+  }
+
   async function init(){
+    loadAdminFilters();
     $("kidSelect").value = kidId;
 
     $("kidSelect").addEventListener("change", (e) => {
@@ -449,30 +419,33 @@
     $("catFilter").addEventListener("change", () => { clearStatus(); render(); });
     $("q").addEventListener("input", () => { clearStatus(); render(); });
 
-    $("btnAddCat").addEventListener("click", handleAddCategory);
-    $("newCatName").addEventListener("keydown", (e) => {
-      if (e.key === "Enter") handleAddCategory();
-    });
+    $("btnOnlyUncat").addEventListener("click", toggleOnlyUncat);
+    $("btnOnlyNew").addEventListener("click", toggleOnlyNew);
 
+    $("btnBatchNew").addEventListener("click", handleBatchNew);
     $("btnClearNew").addEventListener("click", handleClearNew);
     $("btnExportNew").addEventListener("click", handleExportNew);
+
     $("btnBatchCat").addEventListener("click", handleBatchCat);
     $("btnExportWords").addEventListener("click", handleExportWords);
     $("btnClearCatOverride").addEventListener("click", handleClearCatOverride);
 
+    $("btnBackupAll").addEventListener("click", handleBackup);
+    $("fileRestore").addEventListener("change", handleRestore);
+
     try{
       const res = await fetch(WORDS_URL, { cache: "no-store" });
       words = await res.json();
-
-      // 基本清洗：至少要有 id/zh/en，img/cat 可空
-      words = (words || []).filter(w => w && w.id && w.zh && w.en);
-
+      words = (words || []).filter(w => w && w.id && w.zh && w.en).map(w => ({
+        id: norm(w.id), zh: norm(w.zh), en: norm(w.en),
+        img: norm(w.img||""), cat: normalizeCat(w.cat||"")
+      }));
       clearStatus();
       renderCatFilter();
       render();
     }catch(err){
       console.error(err);
-      showNo("載入失敗：請確認 words.json 在同一個 repo 根目錄，且是有效 JSON");
+      showNo("載入失敗：請確認 words.json 在 repo 根目錄且 JSON 正確");
     }
   }
 
