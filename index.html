@@ -3,187 +3,233 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>單字測驗</title>
+  <title>匯入工具（親子版）</title>
 
-  <!-- 只載入樣式，不載入任何 tool / admin -->
+  <!-- 跟測驗頁共用同一套可愛風 -->
   <link rel="stylesheet" href="./style.css" />
+
+  <style>
+    .page{ max-width:1100px; margin:0 auto; padding:0 14px; }
+    .toolTop{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      padding:14px 16px; margin-bottom:14px;
+    }
+    .toolTitle{ display:flex;align-items:center;gap:12px; }
+    .toolBadge{
+      width:44px;height:44px;border-radius:16px;
+      display:flex;align-items:center;justify-content:center;font-weight:1100;
+      background: linear-gradient(135deg, rgba(99,102,241,0.18), rgba(236,72,153,0.14));
+      border: 1px solid rgba(99,102,241,0.20);
+    }
+    .toolH1{ margin:0; font-size:18px; font-weight:1100; }
+    .toolSub{ margin-top:2px; color:var(--muted); font-weight:850; font-size:13px; line-height:1.5; }
+
+    .panel{ padding:14px; margin-bottom:14px; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .twoCol{ display:grid; grid-template-columns: 1fr; gap:12px; margin-top:12px; }
+    @media(min-width: 980px){ .twoCol{ grid-template-columns: 1fr 1fr; } }
+
+    textarea{
+      width:100%;
+      min-height: 320px;
+      border:1px solid rgba(15,23,42,0.10);
+      background: rgba(255,255,255,0.85);
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 850;
+      color: var(--text);
+      outline:none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    textarea:focus{
+      border-color: rgba(99,102,241,0.35);
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.10);
+    }
+
+    .boxTitle{ font-weight:1100; margin-bottom:8px; }
+    .report{
+      margin-top:12px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border:1px solid rgba(15,23,42,0.08);
+      background: rgba(255,255,255,0.75);
+      font-weight: 1000;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+    .ok{ color:#065f46; }
+    .no{ color:#9f1239; }
+    code{
+      background: rgba(15,23,42,0.05);
+      border: 1px solid rgba(15,23,42,0.08);
+      padding:2px 8px;
+      border-radius:999px;
+      font-weight: 900;
+    }
+    .pillNote{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: rgba(99,102,241,0.10);
+      border:1px solid rgba(99,102,241,0.18);
+      color:#334155;
+      font-weight: 1000;
+      font-size: 13px;
+      line-height: 1.4;
+    }
+  </style>
 </head>
+
 <body>
   <div class="bg">
-    <div class="wrap">
+    <div class="page">
 
-      <!-- ===== 頂部列 ===== -->
-      <header class="topbar card">
-        <div class="brand">
-          <div class="logo">Aa</div>
+      <header class="card toolTop">
+        <div class="toolTitle">
+          <div class="toolBadge">📥</div>
           <div>
-            <div class="brandTitle">單字測驗</div>
-            <div class="brandSub">看圖＋中文 → 點🔊聽發音 → 作答 → 顯示英文</div>
+            <h1 class="toolH1">匯入工具</h1>
+            <div class="toolSub">貼 Excel 表格（TSV）→ 一鍵轉成 <code>words.json</code>（親子可愛版）</div>
           </div>
         </div>
-
         <div class="topActions">
-          <!-- 這裡只是「連結」，不會影響本頁 -->
-          <a class="btn ghost" href="./admin.html" target="_blank">🔧 後台</a>
-          <a class="btn ghost" href="./tool.html" target="_blank">📥 匯入</a>
+          <a class="btn ghost" href="./index.html">🏠 回測驗</a>
+          <a class="btn ghost" href="./admin.html">🔧 回後台</a>
         </div>
       </header>
 
-      <!-- ===== 主內容 ===== -->
-      <main class="layout">
+      <section class="card panel">
+        <div class="row">
+          <span class="pillNote">欄位固定：A=id、B=中文、C=英文、D=圖片路徑、E=分類</span>
+          <span class="pillNote">圖片路徑例：<code>images/apple.jpg</code></span>
+        </div>
 
-        <!-- ===== 測驗卡 ===== -->
-        <section class="card quizCard">
+        <div class="row" style="margin-top:12px;">
+          <button id="btnConvert" class="btn primary">轉換成 JSON</button>
+          <button id="btnDownload" class="btn" disabled>下載 words.json</button>
+          <button id="btnClear" class="btn ghost">清空</button>
+        </div>
 
-          <!-- 控制列 -->
-          <div class="quizHeader">
-            <div id="progress" class="progressPill">尚未開始</div>
-
-            <div class="headerControls">
-              <label class="chip">
-                使用者
-                <select id="kidSelect">
-                  <option value="xigua">西瓜</option>
-                  <option value="youzi">柚子</option>
-                  <option value="xiaole">小樂</option>
-                  <option value="apu">阿噗</option>
-                  <option value="anan">安安</option>
-                </select>
-              </label>
-
-              <label class="chip">
-                題庫
-                <select id="poolSelect">
-                  <option value="all">全部</option>
-                  <option value="new">新學 ⭐</option>
-                  <option value="wrong">錯題本 ❗</option>
-                </select>
-              </label>
-
-              <label class="chip">
-                分類
-                <select id="catSelect">
-                  <option value="">全部</option>
-                </select>
-              </label>
-
-              <label class="chip">
-                題數
-                <select id="numQuestions">
-                  <option value="10">10</option>
-                  <option value="15">15</option>
-                  <option value="20" selected>20</option>
-                  <option value="30">30</option>
-                  <option value="50">50</option>
-                </select>
-              </label>
-
-              <label class="chip">
-                避開最近
-                <select id="avoidDays">
-                  <option value="0">不避開</option>
-                  <option value="1">1 天</option>
-                  <option value="3" selected>3 天</option>
-                  <option value="5">5 天</option>
-                </select>
-              </label>
-
-              <div class="btnRow">
-                <button id="btnStart" class="btn primary">開始</button>
-                <button id="btnReset" class="btn">重來</button>
-              </div>
-            </div>
+        <div class="twoCol">
+          <div class="card" style="padding:14px;">
+            <div class="boxTitle">① 貼上 Excel 表格</div>
+            <textarea id="input" placeholder="從 Excel 複製後直接貼在這裡（每列一筆）"></textarea>
           </div>
 
-          <!-- 題目區 -->
-          <div class="questionCard">
-
-            <!-- 圖片 -->
-            <div class="imgFrame">
-              <img id="qImg" class="qImg" alt="" />
-            </div>
-
-            <!-- 文字 -->
-            <div class="qBody">
-              <div class="qTitleRow">
-                <div>
-                  <div class="qLabel">中文</div>
-                  <div id="qZh" class="qZh">按「開始」出題</div>
-                </div>
-                <button id="btnSpeak" class="btn speak">🔊 發音</button>
-              </div>
-
-              <div class="qEnWrap">
-                <div class="qLabel">英文</div>
-                <div id="qEn" class="qEn hidden"></div>
-              </div>
-
-              <!-- 作答 -->
-              <div class="answerBlock">
-                <div class="answerTop">
-                  <label class="chip">
-                    作答方式
-                    <select id="answerMode">
-                      <option value="mc">選擇題</option>
-                      <option value="type">輸入</option>
-                    </select>
-                  </label>
-                  <div class="ruleHint">✔ 答對自動跳題｜✖ 答錯再按下一題</div>
-                </div>
-
-                <!-- 選擇題 -->
-                <div id="mcArea" class="mcGrid"></div>
-
-                <!-- 輸入題 -->
-                <div id="typeArea" class="typeRow hidden">
-                  <input id="typeInput" class="typeInput" placeholder="輸入英文" />
-                  <button id="btnCheck" class="btn primary">送出</button>
-                </div>
-
-                <div id="result" class="result"></div>
-
-                <div class="navRow">
-                  <button id="btnNext" class="btn primary hidden">下一題</button>
-                  <button id="btnShowEn" class="btn ghost hidden">顯示英文</button>
-                </div>
-              </div>
-            </div>
+          <div class="card" style="padding:14px;">
+            <div class="boxTitle">② 轉換輸出（JSON）</div>
+            <textarea id="output" placeholder="按「轉換成 JSON」後會出現在這裡" readonly></textarea>
           </div>
-        </section>
+        </div>
 
-        <!-- ===== 側邊統計 ===== -->
-        <aside class="card sideCard">
-          <div class="sideTitle">學習狀態</div>
-
-          <div class="stats">
-            <div class="stat">
-              <div class="statName">本輪正確</div>
-              <div id="statCorrect" class="statVal">0</div>
-            </div>
-            <div class="stat">
-              <div class="statName">本輪錯誤</div>
-              <div id="statWrong" class="statVal">0</div>
-            </div>
-            <div class="stat">
-              <div class="statName">錯題本</div>
-              <div id="statWrongBank" class="statVal">0</div>
-            </div>
-            <div class="stat">
-              <div class="statName">新學</div>
-              <div id="statNewBank" class="statVal">0</div>
-            </div>
-          </div>
-        </aside>
-
-      </main>
+        <div id="report" class="report"></div>
+      </section>
 
       <footer class="footer">
-        測驗頁（index.html）｜工具在 tool.html｜後台在 admin.html
+        匯入（tool.html）｜後台（admin.html）｜測驗（index.html）
       </footer>
     </div>
   </div>
 
-  <!-- ⚠️ 關鍵：只載入 app.js -->
-  <script src="./app.js"></script>
+<script>
+  const FIXED = ["水果","動物","交通工具","食物","顏色","身體","家庭","學校用品","自然","運動","職業","其他"];
+  const FIXED_SET = new Set(FIXED);
+
+  const input = document.getElementById("input");
+  const output = document.getElementById("output");
+  const report = document.getElementById("report");
+  const btnConvert = document.getElementById("btnConvert");
+  const btnDownload = document.getElementById("btnDownload");
+  const btnClear = document.getElementById("btnClear");
+
+  function norm(s){ return String(s||"").trim(); }
+  function normalizeCat(c){
+    c = norm(c);
+    return FIXED_SET.has(c) ? c : "";
+  }
+
+  function download(filename, text){
+    const blob = new Blob([text], {type:"application/json;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function parseTSV(text){
+    const lines = text.split(/\r?\n/).filter(l => l.trim().length);
+    const rows = lines.map(line => line.split("\t"));
+    return rows;
+  }
+
+  function setReport(html){
+    report.innerHTML = html;
+  }
+
+  function convert(){
+    const text = input.value || "";
+    if (!text.trim()){
+      output.value = "";
+      btnDownload.disabled = true;
+      setReport(`<span class="no">⚠️ 沒有貼上任何資料</span>`);
+      return;
+    }
+
+    const rows = parseTSV(text);
+    const out = [];
+    const seen = new Set();
+
+    let dup = 0, missing = 0, badCat = 0;
+
+    for (const r of rows){
+      const id = norm(r[0]);
+      const zh = norm(r[1]);
+      const en = norm(r[2]);
+      const img = norm(r[3]);
+      const catRaw = norm(r[4]);
+      const cat = normalizeCat(catRaw);
+
+      if (!id || !zh || !en){
+        missing++;
+        continue;
+      }
+      if (seen.has(id)){
+        dup++;
+        continue;
+      }
+      seen.add(id);
+
+      if (catRaw && !cat) badCat++;
+
+      out.push({ id, zh, en, img, cat });
+    }
+
+    const json = JSON.stringify(out, null, 2);
+    output.value = json;
+    btnDownload.disabled = out.length === 0;
+
+    setReport(
+      `<div><span class="ok">✅ 轉換完成：${out.length} 筆</span></div>
+       <div>重複 id 跳過：${dup}｜缺欄位跳過：${missing}｜分類不在清單（會變未分類）：${badCat}</div>
+       <div style="margin-top:6px;">下載後請回 repo 覆蓋根目錄的 <code>words.json</code>（測驗頁就會更新）。</div>`
+    );
+  }
+
+  btnConvert.addEventListener("click", convert);
+  btnDownload.addEventListener("click", () => download("words.json", output.value));
+  btnClear.addEventListener("click", () => {
+    input.value = "";
+    output.value = "";
+    btnDownload.disabled = true;
+    setReport("");
+  });
+</script>
 </body>
 </html>
