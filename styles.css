@@ -25,7 +25,7 @@ body{
 
 .topbar{
   display:flex;
-  align-items:center;
+  align-items:flex-start;
   justify-content:space-between;
   gap:12px;
   margin-bottom: 14px;
@@ -44,25 +44,50 @@ body{
 .brandTitle{ font-size:18px; font-weight:1000; }
 .brandSub{ font-size:13px; color:var(--muted); font-weight:800; margin-top:2px; }
 
-.links{ display:flex; gap:10px; flex-wrap:wrap; }
-.linkBtn{
-  text-decoration:none;
-  padding:10px 12px;
-  border-radius: 14px;
-  border:1px solid var(--bd);
-  background:#fff;
-  font-weight: 950;
-  color: var(--text);
-  box-shadow: var(--shadow);
-}
-.linkBtn:hover{ filter: brightness(0.98); }
-
 .card{
   background: var(--card);
   border: 1px solid var(--bd);
   border-radius: 20px;
   box-shadow: var(--shadow);
   padding: 14px;
+}
+.quizCard{ padding: 14px; }
+
+/* 右上角小狀態卡 */
+.cardMini{
+  background:#fff;
+  border:1px solid var(--bd);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 10px 10px;
+  min-width: 170px;
+}
+.miniTitle{
+  font-weight: 1100;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+.miniGrid{
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.miniItem{
+  border:1px solid rgba(15,23,42,0.08);
+  border-radius: 12px;
+  padding: 8px 8px;
+  background: #fff;
+}
+.miniName{
+  font-size: 12px;
+  font-weight: 1000;
+  color: var(--muted);
+}
+.miniVal{
+  margin-top: 2px;
+  font-size: 18px;
+  font-weight: 1150;
 }
 
 .metaRow{
@@ -129,9 +154,7 @@ select, input{
   color:#fff;
   border-color: rgba(0,0,0,0.15);
 }
-.btn.ghost{
-  background:#f8fafc;
-}
+.btn.ghost{ background:#f8fafc; }
 .btn.speak{
   background:#eef2ff;
   border-color: rgba(99,102,241,0.22);
@@ -143,10 +166,10 @@ select, input{
   gap: 12px;
 }
 @media (min-width: 820px){
-  .qWrap{ grid-template-columns: 380px 1fr; }
+  .qWrap{ grid-template-columns: 420px 1fr; }
 }
 
-/* 大圖 */
+/* ✅ 長方形圖片（重點） */
 .imgBox{
   border-radius: 18px;
   border:1px solid rgba(15,23,42,0.10);
@@ -155,18 +178,17 @@ select, input{
 }
 .qImg{
   width:100%;
-  height: 360px;           /* 這裡讓圖變大 */
+  height: 260px;          /* 長方形：較扁 */
   border-radius: 14px;
   object-fit: cover;
   background:#e2e8f0;
   display:block;
 }
 @media (max-width: 480px){
-  .qImg{ height: 300px; }
+  .qImg{ height: 220px; }
 }
 
 .qMain{ padding: 4px 2px; }
-
 .qTop{
   display:flex;
   align-items:flex-start;
@@ -174,16 +196,14 @@ select, input{
   gap:10px;
   flex-wrap:wrap;
 }
-
 .label{
   color: var(--muted);
   font-weight: 1000;
   font-size: 12px;
   margin-bottom: 4px;
 }
-
 .zhBig{
-  font-size: 34px;        /* 中文超大 */
+  font-size: 34px;
   font-weight: 1100;
   line-height: 1.12;
 }
@@ -200,7 +220,7 @@ select, input{
 
 .hidden{ display:none !important; }
 
-/* 四個選項：固定超大、很明顯 */
+/* 四個選項：超大 */
 .choicesBig{
   margin-top: 14px;
   display:grid;
@@ -211,14 +231,13 @@ select, input{
   .choicesBig{ grid-template-columns: 1fr 1fr; }
 }
 
-/* 這個 class 名稱要跟 app.js 產生的按鈕 class 對上：
-   - 你如果 app.js 用的是 .choiceBtn，這裡也一起吃得到 */
+/* 相容 app.js 產生的 class */
 .choiceBtn, .choicesBig button{
   border: 2px solid rgba(15,23,42,0.12);
   background: #fff;
   border-radius: 18px;
-  padding: 18px 16px;      /* 變大 */
-  font-size: 22px;         /* 字超大 */
+  padding: 18px 16px;
+  font-size: 22px;
   font-weight: 1100;
   cursor:pointer;
   text-align:center;
@@ -278,3 +297,23 @@ code{
   border-radius: 999px;
   font-weight: 900;
 }
+
+/* ✅ 底部連結（你要的） */
+.bottomLinks{
+  margin-top: 14px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.linkBtn{
+  text-decoration:none;
+  padding:10px 12px;
+  border-radius: 14px;
+  border:1px solid var(--bd);
+  background:#fff;
+  font-weight: 950;
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+.linkBtn:hover{ filter: brightness(0.98); }
