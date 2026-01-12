@@ -8,32 +8,39 @@
 </head>
 
 <body class="page-home">
-  <div class="phoneFrame">
-    <header class="homeHeader">
-      <div class="homeTitle">
-        ✨ 單字測驗 ✨
-      </div>
-      <div class="homeSub">入口選擇</div>
-    </header>
+  <div class="phone">
+    <div class="phoneInner">
 
-    <main class="homeMain">
-      <section class="homeCard soft">
-        <div class="homeCardTitle">🧸 怎麼玩？</div>
-        <ul class="howList">
-          <li>看「圖片＋中文」→ 點 🔊 聽發音 → 作答</li>
-          <li>答對：自動下一題</li>
-          <li>答錯：留在原題，並記入錯題本</li>
-        </ul>
+      <header class="hero">
+        <div class="heroRow">
+          <span class="spark">✨</span>
+          <h1 class="heroTitle">單字測驗</h1>
+          <span class="spark">✨</span>
+        </div>
+        <div class="heroSub">親子闖關版</div>
+      </header>
+
+      <section class="howto">
+        <div class="howtoTitle">
+          <span class="infoDot">i</span>
+          怎麼玩？
+        </div>
+        <div class="howtoList">
+          <div class="howLine"><span class="howIcon">🖼️</span> 看圖片＋中文</div>
+          <div class="howLine"><span class="howIcon">🔊</span> 點發音再作答</div>
+          <div class="howLine"><span class="howIcon">✅</span> 答對自動下一題</div>
+          <div class="howLine"><span class="howIcon">❌</span> 答錯留在本題並進錯題本</div>
+        </div>
       </section>
 
-      <section class="homeCard">
-        <div class="homeCardTitle">🧩 測驗區選擇</div>
+      <section class="panel">
+        <div class="panelTitle">選擇設定</div>
 
-        <div class="formGrid">
-          <label class="field">
-            <div class="label">小孩</div>
-            <div class="selectRow">
-              <span class="ico">🧒</span>
+        <div class="form">
+          <div class="field">
+            <div class="fLabel">小孩</div>
+            <div class="select">
+              <span class="fIcon">🧒</span>
               <select id="kid">
                 <option value="xigua">西瓜</option>
                 <option value="youzi">柚子</option>
@@ -42,12 +49,12 @@
                 <option value="anan">安安</option>
               </select>
             </div>
-          </label>
+          </div>
 
-          <label class="field">
-            <div class="label">分類選擇</div>
-            <div class="selectRow">
-              <span class="ico">🗂️</span>
+          <div class="field">
+            <div class="fLabel">分類選擇</div>
+            <div class="select">
+              <span class="fIcon">🗂️</span>
               <select id="pool">
                 <option value="all">全部</option>
                 <option value="cat">分類</option>
@@ -55,74 +62,75 @@
                 <option value="wrong">錯題本</option>
               </select>
             </div>
-          </label>
+          </div>
 
-          <label class="field" id="catWrap">
-            <div class="label">選擇分類（只在「分類」時生效）</div>
-            <div class="selectRow">
-              <span class="ico">🏷️</span>
+          <div class="field" id="catWrap">
+            <div class="fLabel">選擇分類（只在「分類」時）</div>
+            <div class="select">
+              <span class="fIcon">🏷️</span>
               <select id="cat">
                 <option value="">全部分類</option>
               </select>
             </div>
-          </label>
+          </div>
 
-          <label class="field">
-            <div class="label">題目數量</div>
-            <div class="selectRow">
-              <span class="ico">🎯</span>
-              <select id="numQ">
-                <option value="10">10</option>
-                <option value="20" selected>20</option>
-                <option value="30">30</option>
-                <option value="50">50</option>
-              </select>
+          <div class="grid2">
+            <div class="field">
+              <div class="fLabel">題目數量</div>
+              <div class="select">
+                <span class="fIcon">🎯</span>
+                <select id="numQ">
+                  <option value="10">10</option>
+                  <option value="20" selected>20</option>
+                  <option value="30">30</option>
+                  <option value="50">50</option>
+                </select>
+              </div>
             </div>
-          </label>
 
-          <label class="field">
-            <div class="label">避開近幾天重複</div>
-            <div class="selectRow">
-              <span class="ico">🧠</span>
-              <select id="avoidDays">
-                <option value="1">1 天</option>
-                <option value="3" selected>3 天</option>
-                <option value="5">5 天</option>
-                <option value="7">7 天</option>
-              </select>
+            <div class="field">
+              <div class="fLabel">避開近幾天重複</div>
+              <div class="select">
+                <span class="fIcon">🧠</span>
+                <select id="avoidDays">
+                  <option value="1">1 天</option>
+                  <option value="3" selected>3 天</option>
+                  <option value="5">5 天</option>
+                  <option value="7">7 天</option>
+                </select>
+              </div>
             </div>
-          </label>
+          </div>
 
-          <label class="field">
-            <div class="label">測驗方式</div>
-            <div class="selectRow">
-              <span class="ico">⌨️</span>
+          <div class="field">
+            <div class="fLabel">測驗方式</div>
+            <div class="select">
+              <span class="fIcon">⌨️</span>
               <select id="mode">
                 <option value="mc" selected>選擇題</option>
                 <option value="type">Key in</option>
               </select>
             </div>
-          </label>
-        </div>
+          </div>
 
-        <div class="btnStack">
-          <button id="btnStart" class="btnBigPrimary">開始測驗 GO!</button>
-          <a class="btnBigGhost" href="./parent.html">👨‍👩‍👧 家長專區：測驗狀況</a>
-        </div>
-      </section>
-
-      <section class="homeCard">
-        <div class="homeCardTitle">🧰 工具區</div>
-        <div class="toolRow">
-          <a class="chipLink" href="./admin.html" target="_blank" rel="noopener">🔧 後台單字</a>
-          <a class="chipLink" href="./tool.html" target="_blank" rel="noopener">📥 產出 words.json 工具</a>
+          <button id="btnStart" class="cta">
+            <span class="ctaIcon">▶</span>
+            開始測驗 GO!
+          </button>
         </div>
       </section>
-    </main>
 
-    <footer class="homeFooter">
-      <div class="miniNote">小提醒：如果看起來沒更新，請 Ctrl+F5 強制刷新</div>
-    </footer>
+      <section class="panel">
+        <div class="panelTitle">家長專區</div>
+        <a class="ghostBtn" href="./parent.html">👨‍👩‍👧 查看小孩測驗狀況</a>
+      </section>
+
+      <footer class="footerLinks">
+        <a class="miniLink" href="./admin.html" target="_blank" rel="noopener">🔧 後台單字</a>
+        <a class="miniLink" href="./tool.html" target="_blank" rel="noopener">📥 產出 words.json 工具</a>
+      </footer>
+
+    </div>
   </div>
 
   <script src="./app.js"></script>
