@@ -118,7 +118,7 @@
   }
   // ===== NEW (方案B)：新學清單（從 localStorage 讀，依小孩分開）=====
 // ⚠️ 如果 admin 用的 key 不同，只要改這一行即可
-const NEW_KEY = (kid) => `vocab_new_${kid}`;
+const NEW_KEY = (kid) => vocab_new_v1_xigua
 
 function loadNewSet(kid) {
   const raw = loadJSON(NEW_KEY(kid), null);
