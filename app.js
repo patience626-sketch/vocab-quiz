@@ -161,6 +161,20 @@ function loadNewSet(kid) {
     const s = loadJSON(STATS_KEY(kid), {});
     return (s && typeof s === "object") ? s : {};
   }
+  // ===== NEW (方案 B)：新學清單（localStorage）=====
+const NEW_KEY = (kid) => `vocab_new_v1_${kid}`;
+
+function loadNewSet(kid) {
+  try {
+    const raw = JSON.parse(localStorage.getItem(NEW_KEY(kid)));
+    if (Array.isArray(raw)) return new Set(raw.map(String));
+    if (raw && typeof raw === "object") return new Set(Object.keys(raw));
+    return new Set();
+  } catch {
+    return new Set();
+  }
+}
+
   function saveStats(kid, stats) {
     saveJSON(STATS_KEY(kid), stats);
   }
