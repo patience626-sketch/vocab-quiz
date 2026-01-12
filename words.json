@@ -1510,5 +1510,68 @@
     "en": "pineapple",
     "img": "images/pineapple.jpg",
     "cat": "食物"
+  },
+   {
+    "id": "grapefruit",
+    "zh": "葡萄柚",
+    "en": "grapefruit",
+    "img": "images/grapefruit.jpg",
+    "cat": "食物"
+  },
+  {
+    "id": "blueberry",
+    "zh": "藍莓",
+    "en": "blueberry",
+    "img": "images/blueberry.jpg",
+    "cat": "食物"
+  },
+  {
+    "id": "lemon",
+    "zh": "檸檬",
+    "en": "lemon",
+    "img": "images/lemon.jpg",
+    "cat": "食物"
+  },
+  {
+    "id": "passionfruit",
+    "zh": "百香果",
+    "en": "passionfruit",
+    "img": "images/passionfruit.jpg",
+    "cat": "食物"
+  },
+  {
+    "id": "banana",
+    "zh": "香蕉",
+    "en": "banana",
+    "img": "images/banana.jpg",
+    "cat": "食物"
+  },
+  {
+    "id": "dragonfruit",
+    "zh": "火農果",
+    "en": "dragonfruit",
+    "img": "images/dragonfruit.jpg",
+    "cat": "食物"
+  },
+  {
+    "id": "tomato",
+    "zh": "番茄",
+    "en": "tomato",
+    "img": "images/tomato.jpg",
+    "cat": "食物"
+  },
+  {
+    "id": "papaya",
+    "zh": "木瓜",
+    "en": "papaya",
+    "img": "images/papaya.jpg",
+    "cat": "食物"
+  },
+  {
+    "id": "melon",
+    "zh": "香瓜",
+    "en": "melon",
+    "img": "images/melon.jpg",
+    "cat": "食物"
   }
 ]
