@@ -3,55 +3,134 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>words.json 匯入工具（貼表格）</title>
+  <title>匯入工具（親子版）</title>
+
+  <!-- 跟測驗頁共用同一套可愛風 -->
+  <link rel="stylesheet" href="./style.css" />
+
   <style>
-    :root{--bg:#f6f7fb;--card:#fff;--text:#111827;--muted:#6b7280;--bd:#e5e7eb;--dark:#111827}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:var(--bg);color:var(--text)}
-    .wrap{max-width:980px;margin:18px auto;padding:0 14px}
-    .card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px}
-    h1{margin:0 0 8px;font-size:18px}
-    textarea{width:100%;min-height:220px;border:1px solid var(--bd);border-radius:14px;padding:12px;font-size:13px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;background:#fff}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
-    .btn{border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:900;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
-    .btn.primary{background:var(--dark);color:#fff;border-color:var(--dark)}
-    .muted{color:var(--muted);font-weight:700;line-height:1.6}
-    code{background:#f3f4f6;padding:2px 6px;border-radius:8px;border:1px solid var(--bd)}
-    .box{border:1px dashed var(--bd);border-radius:14px;padding:12px;background:#fff}
-    .warn{color:#9f1239;font-weight:900}
-    .ok{color:#065f46;font-weight:900}
+    .page{ max-width:1100px; margin:0 auto; padding:0 14px; }
+    .toolTop{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+      padding:14px 16px; margin-bottom:14px;
+    }
+    .toolTitle{ display:flex;align-items:center;gap:12px; }
+    .toolBadge{
+      width:44px;height:44px;border-radius:16px;
+      display:flex;align-items:center;justify-content:center;font-weight:1100;
+      background: linear-gradient(135deg, rgba(99,102,241,0.18), rgba(236,72,153,0.14));
+      border: 1px solid rgba(99,102,241,0.20);
+    }
+    .toolH1{ margin:0; font-size:18px; font-weight:1100; }
+    .toolSub{ margin-top:2px; color:var(--muted); font-weight:850; font-size:13px; line-height:1.5; }
+
+    .panel{ padding:14px; margin-bottom:14px; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+    .twoCol{ display:grid; grid-template-columns: 1fr; gap:12px; margin-top:12px; }
+    @media(min-width: 980px){ .twoCol{ grid-template-columns: 1fr 1fr; } }
+
+    textarea{
+      width:100%;
+      min-height: 320px;
+      border:1px solid rgba(15,23,42,0.10);
+      background: rgba(255,255,255,0.85);
+      border-radius: 18px;
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 850;
+      color: var(--text);
+      outline:none;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+    textarea:focus{
+      border-color: rgba(99,102,241,0.35);
+      box-shadow: 0 0 0 4px rgba(99,102,241,0.10);
+    }
+
+    .boxTitle{ font-weight:1100; margin-bottom:8px; }
+    .report{
+      margin-top:12px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      border:1px solid rgba(15,23,42,0.08);
+      background: rgba(255,255,255,0.75);
+      font-weight: 1000;
+      line-height: 1.7;
+      color: var(--muted);
+    }
+    .ok{ color:#065f46; }
+    .no{ color:#9f1239; }
+    code{
+      background: rgba(15,23,42,0.05);
+      border: 1px solid rgba(15,23,42,0.08);
+      padding:2px 8px;
+      border-radius:999px;
+      font-weight: 900;
+    }
+    .pillNote{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: rgba(99,102,241,0.10);
+      border:1px solid rgba(99,102,241,0.18);
+      color:#334155;
+      font-weight: 1000;
+      font-size: 13px;
+      line-height: 1.4;
+    }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>words.json 匯入工具（貼 Excel 表格）</h1>
-      <div class="muted">
-        請從 Excel 複製貼上（TSV）：<br/>
-        <code>A=id</code>、<code>B=中文</code>、<code>C=英文</code>、<code>D=圖片路徑</code>（例：images/apple.jpg）、<code>E=分類</code><br/>
-        分類只接受：<code>水果/動物/交通工具/食物/顏色/身體/家庭/學校用品/自然/運動/職業/其他</code>，不符合就會變成未分類。
-      </div>
+  <div class="bg">
+    <div class="page">
 
-      <div class="row">
-        <a class="btn" href="./index.html">← 回測驗頁</a>
-        <a class="btn" href="./admin.html">🔧 回後台</a>
-        <button id="btnConvert" class="btn primary">轉換成 JSON</button>
-        <button id="btnDownload" class="btn" disabled>下載 words.json</button>
-        <button id="btnClear" class="btn">清空</button>
-      </div>
-
-      <div class="row">
-        <div class="box" style="flex:1;min-width:280px;">
-          <div style="font-weight:900;margin-bottom:6px;">貼上表格</div>
-          <textarea id="input" placeholder="在此貼上 Excel 表格（含多列）"></textarea>
+      <header class="card toolTop">
+        <div class="toolTitle">
+          <div class="toolBadge">📥</div>
+          <div>
+            <h1 class="toolH1">匯入工具</h1>
+            <div class="toolSub">貼 Excel 表格（TSV）→ 一鍵轉成 <code>words.json</code>（親子可愛版）</div>
+          </div>
         </div>
-        <div class="box" style="flex:1;min-width:280px;">
-          <div style="font-weight:900;margin-bottom:6px;">輸出 JSON</div>
-          <textarea id="output" placeholder="按「轉換成 JSON」後會出現在這裡" readonly></textarea>
+        <div class="topActions">
+          <a class="btn ghost" href="./index.html">🏠 回測驗</a>
+          <a class="btn ghost" href="./admin.html">🔧 回後台</a>
         </div>
-      </div>
+      </header>
 
-      <div id="report" class="muted" style="margin-top:10px;"></div>
+      <section class="card panel">
+        <div class="row">
+          <span class="pillNote">欄位固定：A=id、B=中文、C=英文、D=圖片路徑、E=分類</span>
+          <span class="pillNote">圖片路徑例：<code>images/apple.jpg</code></span>
+        </div>
+
+        <div class="row" style="margin-top:12px;">
+          <button id="btnConvert" class="btn primary">轉換成 JSON</button>
+          <button id="btnDownload" class="btn" disabled>下載 words.json</button>
+          <button id="btnClear" class="btn ghost">清空</button>
+        </div>
+
+        <div class="twoCol">
+          <div class="card" style="padding:14px;">
+            <div class="boxTitle">① 貼上 Excel 表格</div>
+            <textarea id="input" placeholder="從 Excel 複製後直接貼在這裡（每列一筆）"></textarea>
+          </div>
+
+          <div class="card" style="padding:14px;">
+            <div class="boxTitle">② 轉換輸出（JSON）</div>
+            <textarea id="output" placeholder="按「轉換成 JSON」後會出現在這裡" readonly></textarea>
+          </div>
+        </div>
+
+        <div id="report" class="report"></div>
+      </section>
+
+      <footer class="footer">
+        匯入（tool.html）｜後台（admin.html）｜測驗（index.html）
+      </footer>
     </div>
   </div>
 
@@ -90,13 +169,16 @@
     return rows;
   }
 
+  function setReport(html){
+    report.innerHTML = html;
+  }
+
   function convert(){
-    report.innerHTML = "";
     const text = input.value || "";
     if (!text.trim()){
       output.value = "";
       btnDownload.disabled = true;
-      report.innerHTML = `<div class="warn">⚠️ 沒有貼上任何資料</div>`;
+      setReport(`<span class="no">⚠️ 沒有貼上任何資料</span>`);
       return;
     }
 
@@ -133,15 +215,21 @@
     output.value = json;
     btnDownload.disabled = out.length === 0;
 
-    report.innerHTML =
-      `<div class="ok">✅ 轉換完成：${out.length} 筆</div>` +
-      `<div>重複 id 跳過：${dup} 筆｜缺欄位跳過：${missing} 筆｜分類不在清單（會變未分類）：${badCat} 筆</div>` +
-      `<div class="muted">下載後請回 repo 覆蓋根目錄 <code>words.json</code></div>`;
+    setReport(
+      `<div><span class="ok">✅ 轉換完成：${out.length} 筆</span></div>
+       <div>重複 id 跳過：${dup}｜缺欄位跳過：${missing}｜分類不在清單（會變未分類）：${badCat}</div>
+       <div style="margin-top:6px;">下載後請回 repo 覆蓋根目錄的 <code>words.json</code>（測驗頁就會更新）。</div>`
+    );
   }
 
   btnConvert.addEventListener("click", convert);
   btnDownload.addEventListener("click", () => download("words.json", output.value));
-  btnClear.addEventListener("click", () => { input.value=""; output.value=""; report.innerHTML=""; btnDownload.disabled=true; });
+  btnClear.addEventListener("click", () => {
+    input.value = "";
+    output.value = "";
+    btnDownload.disabled = true;
+    setReport("");
+  });
 </script>
 </body>
 </html>
