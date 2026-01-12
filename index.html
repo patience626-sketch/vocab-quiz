@@ -1,1 +1,130 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>單字測驗｜入口</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
 
+<body class="page-home">
+  <div class="phoneFrame">
+    <header class="homeHeader">
+      <div class="homeTitle">
+        ✨ 單字測驗 ✨
+      </div>
+      <div class="homeSub">入口選擇</div>
+    </header>
+
+    <main class="homeMain">
+      <section class="homeCard soft">
+        <div class="homeCardTitle">🧸 怎麼玩？</div>
+        <ul class="howList">
+          <li>看「圖片＋中文」→ 點 🔊 聽發音 → 作答</li>
+          <li>答對：自動下一題</li>
+          <li>答錯：留在原題，並記入錯題本</li>
+        </ul>
+      </section>
+
+      <section class="homeCard">
+        <div class="homeCardTitle">🧩 測驗區選擇</div>
+
+        <div class="formGrid">
+          <label class="field">
+            <div class="label">小孩</div>
+            <div class="selectRow">
+              <span class="ico">🧒</span>
+              <select id="kid">
+                <option value="xigua">西瓜</option>
+                <option value="youzi">柚子</option>
+                <option value="xiaole">小樂</option>
+                <option value="apu">阿噗</option>
+                <option value="anan">安安</option>
+              </select>
+            </div>
+          </label>
+
+          <label class="field">
+            <div class="label">分類選擇</div>
+            <div class="selectRow">
+              <span class="ico">🗂️</span>
+              <select id="pool">
+                <option value="all">全部</option>
+                <option value="cat">分類</option>
+                <option value="new">新加入</option>
+                <option value="wrong">錯題本</option>
+              </select>
+            </div>
+          </label>
+
+          <label class="field" id="catWrap">
+            <div class="label">選擇分類（只在「分類」時生效）</div>
+            <div class="selectRow">
+              <span class="ico">🏷️</span>
+              <select id="cat">
+                <option value="">全部分類</option>
+              </select>
+            </div>
+          </label>
+
+          <label class="field">
+            <div class="label">題目數量</div>
+            <div class="selectRow">
+              <span class="ico">🎯</span>
+              <select id="numQ">
+                <option value="10">10</option>
+                <option value="20" selected>20</option>
+                <option value="30">30</option>
+                <option value="50">50</option>
+              </select>
+            </div>
+          </label>
+
+          <label class="field">
+            <div class="label">避開近幾天重複</div>
+            <div class="selectRow">
+              <span class="ico">🧠</span>
+              <select id="avoidDays">
+                <option value="1">1 天</option>
+                <option value="3" selected>3 天</option>
+                <option value="5">5 天</option>
+                <option value="7">7 天</option>
+              </select>
+            </div>
+          </label>
+
+          <label class="field">
+            <div class="label">測驗方式</div>
+            <div class="selectRow">
+              <span class="ico">⌨️</span>
+              <select id="mode">
+                <option value="mc" selected>選擇題</option>
+                <option value="type">Key in</option>
+              </select>
+            </div>
+          </label>
+        </div>
+
+        <div class="btnStack">
+          <button id="btnStart" class="btnBigPrimary">開始測驗 GO!</button>
+          <a class="btnBigGhost" href="./parent.html">👨‍👩‍👧 家長專區：測驗狀況</a>
+        </div>
+      </section>
+
+      <section class="homeCard">
+        <div class="homeCardTitle">🧰 工具區</div>
+        <div class="toolRow">
+          <a class="chipLink" href="./admin.html" target="_blank" rel="noopener">🔧 後台單字</a>
+          <a class="chipLink" href="./tool.html" target="_blank" rel="noopener">📥 產出 words.json 工具</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="homeFooter">
+      <div class="miniNote">小提醒：如果看起來沒更新，請 Ctrl+F5 強制刷新</div>
+    </footer>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
