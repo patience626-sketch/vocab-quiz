@@ -3,145 +3,187 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>words.json 匯入工具（貼表格）</title>
-  <style>
-    :root{--bg:#f6f7fb;--card:#fff;--text:#111827;--muted:#6b7280;--bd:#e5e7eb;--dark:#111827}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:var(--bg);color:var(--text)}
-    .wrap{max-width:980px;margin:18px auto;padding:0 14px}
-    .card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px}
-    h1{margin:0 0 8px;font-size:18px}
-    textarea{width:100%;min-height:220px;border:1px solid var(--bd);border-radius:14px;padding:12px;font-size:13px;font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;background:#fff}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px}
-    .btn{border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:900;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
-    .btn.primary{background:var(--dark);color:#fff;border-color:var(--dark)}
-    .muted{color:var(--muted);font-weight:700;line-height:1.6}
-    code{background:#f3f4f6;padding:2px 6px;border-radius:8px;border:1px solid var(--bd)}
-    .box{border:1px dashed var(--bd);border-radius:14px;padding:12px;background:#fff}
-    .warn{color:#9f1239;font-weight:900}
-    .ok{color:#065f46;font-weight:900}
-  </style>
+  <title>單字測驗</title>
+
+  <!-- 只載入樣式，不載入任何 tool / admin -->
+  <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>words.json 匯入工具（貼 Excel 表格）</h1>
-      <div class="muted">
-        請從 Excel 複製貼上（TSV）：<br/>
-        <code>A=id</code>、<code>B=中文</code>、<code>C=英文</code>、<code>D=圖片路徑</code>（例：images/apple.jpg）、<code>E=分類</code><br/>
-        分類只接受：<code>水果/動物/交通工具/食物/顏色/身體/家庭/學校用品/自然/運動/職業/其他</code>，不符合就會變成未分類。
-      </div>
+  <div class="bg">
+    <div class="wrap">
 
-      <div class="row">
-        <a class="btn" href="./index.html">← 回測驗頁</a>
-        <a class="btn" href="./admin.html">🔧 回後台</a>
-        <button id="btnConvert" class="btn primary">轉換成 JSON</button>
-        <button id="btnDownload" class="btn" disabled>下載 words.json</button>
-        <button id="btnClear" class="btn">清空</button>
-      </div>
-
-      <div class="row">
-        <div class="box" style="flex:1;min-width:280px;">
-          <div style="font-weight:900;margin-bottom:6px;">貼上表格</div>
-          <textarea id="input" placeholder="在此貼上 Excel 表格（含多列）"></textarea>
+      <!-- ===== 頂部列 ===== -->
+      <header class="topbar card">
+        <div class="brand">
+          <div class="logo">Aa</div>
+          <div>
+            <div class="brandTitle">單字測驗</div>
+            <div class="brandSub">看圖＋中文 → 點🔊聽發音 → 作答 → 顯示英文</div>
+          </div>
         </div>
-        <div class="box" style="flex:1;min-width:280px;">
-          <div style="font-weight:900;margin-bottom:6px;">輸出 JSON</div>
-          <textarea id="output" placeholder="按「轉換成 JSON」後會出現在這裡" readonly></textarea>
-        </div>
-      </div>
 
-      <div id="report" class="muted" style="margin-top:10px;"></div>
+        <div class="topActions">
+          <!-- 這裡只是「連結」，不會影響本頁 -->
+          <a class="btn ghost" href="./admin.html" target="_blank">🔧 後台</a>
+          <a class="btn ghost" href="./tool.html" target="_blank">📥 匯入</a>
+        </div>
+      </header>
+
+      <!-- ===== 主內容 ===== -->
+      <main class="layout">
+
+        <!-- ===== 測驗卡 ===== -->
+        <section class="card quizCard">
+
+          <!-- 控制列 -->
+          <div class="quizHeader">
+            <div id="progress" class="progressPill">尚未開始</div>
+
+            <div class="headerControls">
+              <label class="chip">
+                使用者
+                <select id="kidSelect">
+                  <option value="xigua">西瓜</option>
+                  <option value="youzi">柚子</option>
+                  <option value="xiaole">小樂</option>
+                  <option value="apu">阿噗</option>
+                  <option value="anan">安安</option>
+                </select>
+              </label>
+
+              <label class="chip">
+                題庫
+                <select id="poolSelect">
+                  <option value="all">全部</option>
+                  <option value="new">新學 ⭐</option>
+                  <option value="wrong">錯題本 ❗</option>
+                </select>
+              </label>
+
+              <label class="chip">
+                分類
+                <select id="catSelect">
+                  <option value="">全部</option>
+                </select>
+              </label>
+
+              <label class="chip">
+                題數
+                <select id="numQuestions">
+                  <option value="10">10</option>
+                  <option value="15">15</option>
+                  <option value="20" selected>20</option>
+                  <option value="30">30</option>
+                  <option value="50">50</option>
+                </select>
+              </label>
+
+              <label class="chip">
+                避開最近
+                <select id="avoidDays">
+                  <option value="0">不避開</option>
+                  <option value="1">1 天</option>
+                  <option value="3" selected>3 天</option>
+                  <option value="5">5 天</option>
+                </select>
+              </label>
+
+              <div class="btnRow">
+                <button id="btnStart" class="btn primary">開始</button>
+                <button id="btnReset" class="btn">重來</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- 題目區 -->
+          <div class="questionCard">
+
+            <!-- 圖片 -->
+            <div class="imgFrame">
+              <img id="qImg" class="qImg" alt="" />
+            </div>
+
+            <!-- 文字 -->
+            <div class="qBody">
+              <div class="qTitleRow">
+                <div>
+                  <div class="qLabel">中文</div>
+                  <div id="qZh" class="qZh">按「開始」出題</div>
+                </div>
+                <button id="btnSpeak" class="btn speak">🔊 發音</button>
+              </div>
+
+              <div class="qEnWrap">
+                <div class="qLabel">英文</div>
+                <div id="qEn" class="qEn hidden"></div>
+              </div>
+
+              <!-- 作答 -->
+              <div class="answerBlock">
+                <div class="answerTop">
+                  <label class="chip">
+                    作答方式
+                    <select id="answerMode">
+                      <option value="mc">選擇題</option>
+                      <option value="type">輸入</option>
+                    </select>
+                  </label>
+                  <div class="ruleHint">✔ 答對自動跳題｜✖ 答錯再按下一題</div>
+                </div>
+
+                <!-- 選擇題 -->
+                <div id="mcArea" class="mcGrid"></div>
+
+                <!-- 輸入題 -->
+                <div id="typeArea" class="typeRow hidden">
+                  <input id="typeInput" class="typeInput" placeholder="輸入英文" />
+                  <button id="btnCheck" class="btn primary">送出</button>
+                </div>
+
+                <div id="result" class="result"></div>
+
+                <div class="navRow">
+                  <button id="btnNext" class="btn primary hidden">下一題</button>
+                  <button id="btnShowEn" class="btn ghost hidden">顯示英文</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ===== 側邊統計 ===== -->
+        <aside class="card sideCard">
+          <div class="sideTitle">學習狀態</div>
+
+          <div class="stats">
+            <div class="stat">
+              <div class="statName">本輪正確</div>
+              <div id="statCorrect" class="statVal">0</div>
+            </div>
+            <div class="stat">
+              <div class="statName">本輪錯誤</div>
+              <div id="statWrong" class="statVal">0</div>
+            </div>
+            <div class="stat">
+              <div class="statName">錯題本</div>
+              <div id="statWrongBank" class="statVal">0</div>
+            </div>
+            <div class="stat">
+              <div class="statName">新學</div>
+              <div id="statNewBank" class="statVal">0</div>
+            </div>
+          </div>
+        </aside>
+
+      </main>
+
+      <footer class="footer">
+        測驗頁（index.html）｜工具在 tool.html｜後台在 admin.html
+      </footer>
     </div>
   </div>
 
-<script>
-  const FIXED = ["水果","動物","交通工具","食物","顏色","身體","家庭","學校用品","自然","運動","職業","其他"];
-  const FIXED_SET = new Set(FIXED);
-
-  const input = document.getElementById("input");
-  const output = document.getElementById("output");
-  const report = document.getElementById("report");
-  const btnConvert = document.getElementById("btnConvert");
-  const btnDownload = document.getElementById("btnDownload");
-  const btnClear = document.getElementById("btnClear");
-
-  function norm(s){ return String(s||"").trim(); }
-  function normalizeCat(c){
-    c = norm(c);
-    return FIXED_SET.has(c) ? c : "";
-  }
-
-  function download(filename, text){
-    const blob = new Blob([text], {type:"application/json;charset=utf-8"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }
-
-  function parseTSV(text){
-    const lines = text.split(/\r?\n/).filter(l => l.trim().length);
-    const rows = lines.map(line => line.split("\t"));
-    return rows;
-  }
-
-  function convert(){
-    report.innerHTML = "";
-    const text = input.value || "";
-    if (!text.trim()){
-      output.value = "";
-      btnDownload.disabled = true;
-      report.innerHTML = `<div class="warn">⚠️ 沒有貼上任何資料</div>`;
-      return;
-    }
-
-    const rows = parseTSV(text);
-    const out = [];
-    const seen = new Set();
-
-    let dup = 0, missing = 0, badCat = 0;
-
-    for (const r of rows){
-      const id = norm(r[0]);
-      const zh = norm(r[1]);
-      const en = norm(r[2]);
-      const img = norm(r[3]);
-      const catRaw = norm(r[4]);
-      const cat = normalizeCat(catRaw);
-
-      if (!id || !zh || !en){
-        missing++;
-        continue;
-      }
-      if (seen.has(id)){
-        dup++;
-        continue;
-      }
-      seen.add(id);
-
-      if (catRaw && !cat) badCat++;
-
-      out.push({ id, zh, en, img, cat });
-    }
-
-    const json = JSON.stringify(out, null, 2);
-    output.value = json;
-    btnDownload.disabled = out.length === 0;
-
-    report.innerHTML =
-      `<div class="ok">✅ 轉換完成：${out.length} 筆</div>` +
-      `<div>重複 id 跳過：${dup} 筆｜缺欄位跳過：${missing} 筆｜分類不在清單（會變未分類）：${badCat} 筆</div>` +
-      `<div class="muted">下載後請回 repo 覆蓋根目錄 <code>words.json</code></div>`;
-  }
-
-  btnConvert.addEventListener("click", convert);
-  btnDownload.addEventListener("click", () => download("words.json", output.value));
-  btnClear.addEventListener("click", () => { input.value=""; output.value=""; report.innerHTML=""; btnDownload.disabled=true; });
-</script>
+  <!-- ⚠️ 關鍵：只載入 app.js -->
+  <script src="./app.js"></script>
 </body>
 </html>
