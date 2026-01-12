@@ -8,114 +8,140 @@
 </head>
 <body>
   <div class="wrap">
-    <header class="top">
-      <h1>單字測驗</h1>
-      <div class="sub">圖片＋中文先看，答完才顯示英文；答對自動跳題、答錯手動下一題。</div>
+    <header class="header card">
+      <div class="titleRow">
+        <h1>單字測驗</h1>
+        <div class="quickLinks">
+          <a class="btn" href="./admin.html" target="_blank" rel="noopener">🔧 單字後台</a>
+          <a class="btn" href="./tool.html" target="_blank" rel="noopener">📥 匯入工具</a>
+        </div>
+      </div>
+
+      <div class="controls">
+        <label class="pill">
+          使用者
+          <select id="kidSelect">
+            <option value="xigua">西瓜</option>
+            <option value="youzi">柚子</option>
+            <option value="xiaole">小樂</option>
+            <option value="apu">阿噗</option>
+            <option value="anan">安安</option>
+          </select>
+        </label>
+
+        <label class="pill">
+          題庫
+          <select id="poolSelect">
+            <option value="all" selected>全部</option>
+            <option value="new">新學 ⭐</option>
+            <option value="wrong">錯題本 ❗</option>
+          </select>
+        </label>
+
+        <label class="pill">
+          分類
+          <select id="catSelect">
+            <option value="">全部</option>
+          </select>
+        </label>
+
+        <label class="pill">
+          今日題數
+          <select id="numQuestions">
+            <option value="10">10</option>
+            <option value="15">15</option>
+            <option value="20" selected>20</option>
+            <option value="30">30</option>
+            <option value="50">50</option>
+          </select>
+        </label>
+
+        <label class="pill">
+          避開最近
+          <select id="avoidDays">
+            <option value="0">不避開</option>
+            <option value="1">1 天</option>
+            <option value="3" selected>3 天</option>
+            <option value="5">5 天</option>
+            <option value="7">7 天</option>
+          </select>
+        </label>
+
+        <button id="btnStart" class="btn primary">開始</button>
+        <button id="btnReset" class="btn">重來</button>
+      </div>
+
+      <div class="muted tip">
+        規則：本輪題目不重複；答對自動跳下一題；答錯會顯示「下一題」按鈕（錯題留到錯題本再練）。
+      </div>
     </header>
 
-    <section class="card controls">
-      <label class="pill">
-        小孩
-        <select id="kidSelect">
-          <option value="xigua">西瓜</option>
-          <option value="youzi">柚子</option>
-          <option value="xiaole">小樂</option>
-          <option value="apu">阿噗</option>
-          <option value="anan">安安</option>
-        </select>
-      </label>
+    <main class="main">
+      <section class="card quiz">
+        <div id="progress" class="progress"></div>
 
-      <label class="pill">
-        題庫
-        <select id="poolSelect">
-          <option value="all">全部</option>
-          <option value="new">新學 ⭐</option>
-          <option value="wrong">錯題本 ❌</option>
-          <option value="cat">分類</option>
-        </select>
-      </label>
+        <div class="qTop">
+          <img id="qImg" class="qImg" alt="" />
+          <div class="qText">
+            <div class="zhRow">
+              <div id="qZh" class="qZh">按「開始」出題</div>
+              <button id="btnSpeak" class="btn">🔊 發音</button>
+            </div>
+            <div id="qEn" class="qEn hidden"></div>
+          </div>
+        </div>
 
-      <label class="pill" id="catPill" style="display:none;">
-        分類
-        <select id="catSelect"></select>
-      </label>
-
-      <label class="pill">
-        作答方式
-        <select id="modeSelect">
-          <option value="choice" selected>選擇題</option>
-          <option value="type">輸入英文</option>
-        </select>
-      </label>
-
-      <label class="pill">
-        今日題數
-        <select id="numQuestions">
-          <option value="10">10</option>
-          <option value="15">15</option>
-          <option value="20" selected>20</option>
-          <option value="30">30</option>
-          <option value="50">50</option>
-        </select>
-      </label>
-
-      <label class="pill">
-        避開最近
-        <select id="avoidDays">
-          <option value="0">不避開</option>
-          <option value="1">1 天</option>
-          <option value="3" selected>3 天</option>
-          <option value="5">5 天</option>
-          <option value="7">7 天</option>
-        </select>
-      </label>
-
-      <button class="btn" id="btnStart">開始測驗</button>
-      <button class="btn" id="btnRetryWrong">重測錯題</button>
-      <button class="btn" id="btnRetryNew">重測新學</button>
-
-      <a class="btn" href="./admin.html" target="_blank" rel="noopener">🔧 單字後台</a>
-      <a class="btn" href="./tool.html" target="_blank" rel="noopener">📥 匯入工具</a>
-    </section>
-
-    <section class="card quiz">
-      <div id="progress" class="progress"></div>
-
-      <div class="qrow">
-        <img id="qImg" class="qimg" alt="" />
-        <div class="qmain">
-          <div class="qzh" id="qZh">按「開始測驗」</div>
-          <div class="qmeta">
-            <span class="tag" id="qCat">—</span>
-            <button class="btn small" id="btnSpeak" title="點了才發音">🔊 發音</button>
+        <div class="answerArea">
+          <div class="pillRow">
+            <label class="pill">
+              作答方式
+              <select id="answerMode">
+                <option value="mc" selected>選擇題</option>
+                <option value="type">輸入</option>
+              </select>
+            </label>
           </div>
 
-          <div class="reveal" id="revealEn" style="display:none;">
-            英文：<span id="qEn"></span>
-          </div>
+          <div id="mcArea" class="mcArea"></div>
 
-          <div id="choiceArea" class="choices"></div>
-
-          <div id="typeArea" class="typeArea" style="display:none;">
-            <input id="typeInput" class="typeInput" placeholder="請輸入英文（不分大小寫）" autocomplete="off" />
-            <button class="btn" id="btnSubmitType">送出</button>
+          <div id="typeArea" class="typeArea hidden">
+            <input id="typeInput" class="typeInput" placeholder="輸入英文（不分大小寫）" />
+            <button id="btnCheck" class="btn primary">送出</button>
           </div>
 
           <div id="result" class="result"></div>
 
-          <div class="qactions">
-            <button class="btn primary" id="btnNext" disabled>下一題</button>
-            <button class="btn danger" id="btnMarkWrong">加入錯題</button>
-            <button class="btn" id="btnClearWrong">移出錯題</button>
+          <div class="navRow">
+            <button id="btnNext" class="btn primary hidden">下一題</button>
+            <button id="btnShowEn" class="btn hidden">顯示英文</button>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div id="endSummary" class="endSummary" style="display:none;"></div>
-    </section>
+      <section class="card stats">
+        <div class="statsGrid">
+          <div>
+            <div class="statsLabel">本輪正確</div>
+            <div id="statCorrect" class="statsValue">0</div>
+          </div>
+          <div>
+            <div class="statsLabel">本輪錯誤</div>
+            <div id="statWrong" class="statsValue">0</div>
+          </div>
+          <div>
+            <div class="statsLabel">錯題本（此小孩）</div>
+            <div id="statWrongBank" class="statsValue">0</div>
+          </div>
+          <div>
+            <div class="statsLabel">新學（此小孩）</div>
+            <div id="statNewBank" class="statsValue">0</div>
+          </div>
+        </div>
+      </section>
+    </main>
 
-    <footer class="foot">
-      <div id="status" class="status"></div>
+    <footer class="footer muted">
+      圖片路徑請放在 <code>images/</code>，<code>words.json</code> 的 <code>img</code> 欄位例如 <code>images/apple.jpg</code>。
     </footer>
   </div>
 
