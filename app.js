@@ -116,6 +116,22 @@
   function saveWrongSet(kid, set) {
     saveJSON(WRONG_KEY(kid), Array.from(set));
   }
+  // ===== NEW (方案B)：新學清單（從 localStorage 讀，依小孩分開）=====
+// ⚠️ 如果 admin 用的 key 不同，只要改這一行即可
+const NEW_KEY = (kid) => `vocab_new_${kid}`;
+
+function loadNewSet(kid) {
+  const raw = loadJSON(NEW_KEY(kid), null);
+
+  // 允許 admin 存成 array 或 object 兩種格式
+  if (Array.isArray(raw)) {
+    return new Set(raw.map(norm).filter(Boolean));
+  }
+  if (raw && typeof raw === "object") {
+    return new Set(Object.keys(raw).map(norm).filter(Boolean));
+  }
+  return new Set();
+}
   function loadSeenMap(kid) {
     const m = loadJSON(SEEN_KEY(kid), {});
     return (m && typeof m === "object") ? m : {};
@@ -273,12 +289,15 @@
     let pool = words.slice();
     if (settings.pool === "new") {
       // 兩種支援：isNew=true 或 admin 另存 new-set（你目前 admin 若已做可再加）
-      pool = pool.filter(w => w.isNew);
-    } else if (settings.pool === "wrong") {
-      pool = pool.filter(w => wrongSet.has(w.id));
-    } else if (settings.pool === "cat" && settings.cat) {
-      pool = pool.filter(w => w.cat === settings.cat);
-    }
+      if (settings.pool === "new") {
+  const newSet = loadNewSet(settings.kid);
+  pool = pool.filter(w => newSet.has(w.id));
+} else if (settings.pool === "wrong") {
+  pool = pool.filter(w => wrongSet.has(w.id));
+} else if (settings.pool === "cat" && settings.cat) {
+  pool = pool.filter(w => w.cat === settings.cat);
+}
+
 
     // avoid filter
     let poolAvoided = pool.filter(w => !avoidSet.has(w.id));
