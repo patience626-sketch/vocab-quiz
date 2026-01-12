@@ -3,97 +3,242 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>單字後台（新學/分類/備份）</title>
+  <title>單字後台（親子版）</title>
+
+  <!-- 跟測驗頁共用同一套可愛風 -->
+  <link rel="stylesheet" href="./style.css" />
+
   <style>
-    :root{--bg:#f6f7fb;--card:#fff;--text:#111827;--muted:#6b7280;--bd:#e5e7eb;--dark:#111827}
-    *{box-sizing:border-box}
-    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:var(--bg);color:var(--text)}
-    .wrap{max-width:1180px;margin:18px auto;padding:0 14px}
-    .card{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:14px}
-    h1{margin:0 0 10px;font-size:18px}
-    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-    .pill{display:flex;gap:8px;align-items:center;font-weight:900;border:1px solid var(--bd);background:#fff;border-radius:999px;padding:8px 12px}
-    input,select{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;font-size:14px;background:#fff}
-    .btn{border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:900;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-decoration:none}
-    .btn.primary{background:var(--dark);color:#fff;border-color:var(--dark)}
-    .btn.danger{border-color:#fecaca;color:#991b1b}
-    .btn.toggle.on{background:var(--dark);color:#fff;border-color:var(--dark)}
-    .topnote{margin-top:8px;font-size:13px;color:var(--muted);font-weight:700;line-height:1.6}
-    .count{font-weight:900;color:#111827}
-    .grid{display:grid;grid-template-columns:repeat(1,1fr);gap:10px;margin-top:12px}
-    @media(min-width:760px){.grid{grid-template-columns:repeat(2,1fr)}}
-    @media(min-width:1060px){.grid{grid-template-columns:repeat(3,1fr)}}
-    .item{border:1px solid var(--bd);border-radius:16px;padding:10px;display:flex;gap:10px;align-items:flex-start;background:#fff}
-    .img{width:72px;height:72px;border-radius:12px;border:1px solid var(--bd);object-fit:cover;background:#f3f4f6}
-    .meta{flex:1;min-width:0}
-    .zh{font-size:16px;font-weight:900;margin:0}
-    .en{margin:3px 0 0;font-weight:800;word-break:break-word}
-    .tag{margin-top:6px;display:inline-block;font-size:12px;font-weight:900;color:#374151;background:#f3f4f6;border:1px solid var(--bd);padding:3px 8px;border-radius:999px}
-    .idline{margin-top:6px;font-size:12px;color:var(--muted);font-weight:800;word-break:break-word}
-    .actions{display:flex;flex-direction:column;gap:8px;align-items:stretch;min-width:120px}
-    .star{border:1px solid var(--bd);border-radius:12px;padding:8px 10px;font-weight:900;background:#fff;cursor:pointer;white-space:nowrap}
-    .star.on{background:var(--dark);color:#fff;border-color:var(--dark)}
-    .catbox{display:flex;gap:8px;align-items:center;margin-top:8px}
-    .catbox select{flex:1}
-    .status{margin-top:8px;font-size:13px;font-weight:900}
-    .ok{color:#065f46}
-    .no{color:#9f1239}
-    .divider{height:1px;background:var(--bd);margin:10px 0}
-    .hint{font-size:12px;color:var(--muted);font-weight:800}
+    /* admin 專用小補丁：用你 style.css 的視覺，但版面更像後台 */
+    .page{
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 14px;
+    }
+    .adminTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .adminTitle{
+      display:flex;align-items:center;gap:12px;
+    }
+    .adminBadge{
+      width:44px;height:44px;border-radius:16px;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:1100;
+      background: linear-gradient(135deg, rgba(99,102,241,0.18), rgba(236,72,153,0.14));
+      border: 1px solid rgba(99,102,241,0.20);
+    }
+    .adminH1{margin:0;font-size:18px;font-weight:1100;}
+    .adminSub{margin-top:2px;color:var(--muted);font-weight:850;font-size:13px;line-height:1.5;}
+    .toolbar{
+      padding: 14px;
+      margin-bottom: 14px;
+    }
+    .toolbarRow{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+    .searchInput{
+      flex: 1;
+      min-width: 220px;
+    }
+    .hintBox{
+      margin-top:10px;
+      color: var(--muted);
+      font-weight: 850;
+      line-height: 1.6;
+      font-size: 13px;
+    }
+
+    .statusBar{
+      margin-top:10px;
+      padding:10px 12px;
+      border-radius:16px;
+      border:1px solid rgba(15,23,42,0.08);
+      background: rgba(255,255,255,0.7);
+      font-weight: 1000;
+      min-height: 24px;
+    }
+    .ok{color:#065f46;}
+    .no{color:#9f1239;}
+
+    .adminGrid{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 760px){
+      .adminGrid{ grid-template-columns: 1fr 1fr; }
+    }
+    @media (min-width: 1040px){
+      .adminGrid{ grid-template-columns: 1fr 1fr 1fr; }
+    }
+
+    .wordCard{
+      padding: 12px;
+      border-radius: 22px;
+      border:1px solid rgba(15,23,42,0.08);
+      background: rgba(255,255,255,0.80);
+      box-shadow: 0 10px 25px rgba(15,23,42,0.05);
+      display:flex;
+      gap: 12px;
+      align-items:flex-start;
+    }
+    .thumb{
+      width: 74px;
+      height: 74px;
+      border-radius: 18px;
+      border:1px solid rgba(15,23,42,0.10);
+      background: #f1f5f9;
+      object-fit: cover;
+      flex:0 0 auto;
+    }
+    .wordMeta{ flex:1; min-width:0; }
+    .zhBig{ font-size:18px; font-weight:1100; margin:0; line-height:1.2; }
+    .enText{ margin-top:4px; font-weight:950; color:#0f172a; word-break:break-word; }
+    .idText{ margin-top:6px; font-size:12px; color:var(--muted); font-weight:850; word-break:break-word; }
+    .tagPill{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      margin-top:8px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(99,102,241,0.16);
+      background: rgba(99,102,241,0.08);
+      font-weight:1000;
+      font-size:12px;
+      color:#334155;
+    }
+    .rightCol{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:stretch;
+      min-width: 132px;
+    }
+    .miniBtn{
+      border-radius: 16px;
+      padding: 10px 12px;
+      font-weight: 1100;
+    }
+    .miniBtn.on{
+      background: linear-gradient(180deg, var(--primary), var(--primary2));
+      color:#fff;
+      border-color: rgba(0,0,0,0.15);
+    }
+    .catRow{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      margin-top:10px;
+    }
+    .catRow select{ flex:1; }
+    .countLine{
+      margin-top:10px;
+      color: var(--muted);
+      font-weight: 900;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .countLine .num{ font-weight:1100; color:#0f172a; }
+    code{
+      background: rgba(15,23,42,0.05);
+      border: 1px solid rgba(15,23,42,0.08);
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-weight: 900;
+    }
   </style>
 </head>
+
 <body>
-  <div class="wrap">
-    <div class="card">
-      <h1>單字後台（新學 ⭐ / 分類 / 備份）</h1>
+  <div class="bg">
+    <div class="page">
 
-      <div class="row">
-        <div class="pill">
-          使用者
-          <select id="kidSelect">
-            <option value="xigua">西瓜</option>
-            <option value="youzi">柚子</option>
-            <option value="xiaole">小樂</option>
-            <option value="apu">阿噗</option>
-            <option value="anan">安安</option>
-          </select>
+      <!-- top -->
+      <header class="card adminTop">
+        <div class="adminTitle">
+          <div class="adminBadge">⭐</div>
+          <div>
+            <h1 class="adminH1">單字後台</h1>
+            <div class="adminSub">標註新學、調整分類、批次處理、匯出新版 words.json（親子可愛版）</div>
+          </div>
         </div>
 
-        <div class="pill">
-          篩選分類
-          <select id="catFilter">
-            <option value="">全部</option>
-          </select>
+        <div class="topActions">
+          <a class="btn ghost" href="./index.html">🏠 回測驗</a>
+          <a class="btn ghost" href="./tool.html" target="_blank" rel="noopener">📥 匯入工具</a>
+        </div>
+      </header>
+
+      <!-- toolbar -->
+      <section class="card toolbar">
+        <div class="toolbarRow">
+          <label class="chip">
+            使用者
+            <select id="kidSelect">
+              <option value="xigua">西瓜</option>
+              <option value="youzi">柚子</option>
+              <option value="xiaole">小樂</option>
+              <option value="apu">阿噗</option>
+              <option value="anan">安安</option>
+            </select>
+          </label>
+
+          <label class="chip">
+            篩選分類
+            <select id="catFilter">
+              <option value="">全部</option>
+            </select>
+          </label>
+
+          <input id="q" class="searchInput" placeholder="搜尋：中文 / 英文 / id" />
+
+          <button class="btn ghost" id="btnOnlyUncat" type="button">只看未分類</button>
+          <button class="btn ghost" id="btnOnlyNew" type="button">只看新學</button>
+
+          <button class="btn" id="btnBatchNew" type="button">批次加入新學</button>
+          <button class="btn" id="btnClearNew" type="button">清空新學</button>
+          <button class="btn ghost" id="btnExportNew" type="button">匯出新學</button>
+
+          <button class="btn" id="btnBatchCat" type="button">批次改分類</button>
+          <button class="btn primary" id="btnExportWords" type="button">匯出新版 words.json</button>
+          <button class="btn ghost" id="btnClearCatOverride" type="button">清空分類覆寫</button>
+
+          <button class="btn" id="btnBackupAll" type="button">備份</button>
+          <label class="btn ghost" for="fileRestore">還原
+            <input id="fileRestore" type="file" accept=".json" style="display:none">
+          </label>
         </div>
 
-        <input id="q" placeholder="搜尋：中文 / 英文 / id" style="flex:1;min-width:240px;" />
+        <div class="countLine">
+          目前小孩：<span id="kidName" class="num"></span>｜
+          新學數：<span id="newCount" class="num">0</span>｜
+          顯示：<span id="shownCount" class="num">0</span> / <span id="totalCount" class="num">0</span>
+          <br/>
+          <span class="hintBox">
+            ✅ 分類只能用下拉（避免打錯字）。要讓測驗頁永久吃到分類：匯出新版 <code>words.json</code> 後回 repo 覆蓋上傳。
+          </span>
+        </div>
 
-        <button class="btn toggle" id="btnOnlyUncat" type="button">只看未分類</button>
-        <button class="btn toggle" id="btnOnlyNew" type="button">只看新學</button>
+        <div id="status" class="statusBar"></div>
+      </section>
 
-        <button class="btn" id="btnBatchNew" type="button">批次加入新學</button>
-        <button class="btn" id="btnClearNew" type="button">清空此小孩新學</button>
-        <button class="btn" id="btnExportNew" type="button">匯出新學清單</button>
+      <!-- grid -->
+      <section id="grid" class="adminGrid"></section>
 
-        <button class="btn" id="btnBatchCat" type="button">批次改分類</button>
-        <button class="btn primary" id="btnExportWords" type="button">匯出新版 words.json</button>
-        <button class="btn danger" id="btnClearCatOverride" type="button">清空分類覆寫</button>
-
-        <button class="btn" id="btnBackupAll" type="button">備份</button>
-        <label class="btn" for="fileRestore">還原<input id="fileRestore" type="file" accept=".json" style="display:none"></label>
-      </div>
-
-      <div class="topnote">
-        使用者 <span id="kidName" class="count"></span> 的新學數：<span id="newCount" class="count">0</span>
-        ｜目前顯示：<span id="shownCount" class="count">0</span> / <span id="totalCount" class="count">0</span>
-        <br/>
-        <span class="hint">分類只允許下拉選（避免打錯字）。要讓測驗頁永久吃到新分類：按「匯出新版 words.json」→ 回 repo 覆蓋上傳 words.json。</span>
-      </div>
-
-      <div id="status" class="status"></div>
-      <div class="divider"></div>
-
-      <div id="grid" class="grid"></div>
+      <footer class="footer" style="margin-top:14px;">
+        後台（admin.html）｜匯入（tool.html）｜測驗（index.html）
+      </footer>
     </div>
   </div>
 
@@ -118,8 +263,6 @@
   // kids
   let kidId = localStorage.getItem("vocab_kid_active") || "xigua";
   function LS_NEW_KEY(){ return `vocab_new_v1_${kidId}`; }
-  function LS_WRONG_KEY(){ return `vocab_wrong_v1_${kidId}`; }
-  function LS_SEEN_KEY(){ return `vocab_seen_v1_${kidId}`; }
 
   function loadIdSet(key){
     try{
@@ -161,8 +304,11 @@
     localStorage.setItem(LS_ADMIN_FILTERS, JSON.stringify({onlyUncat, onlyNew}));
   }
   function updateToggleUI(){
+    // 用 ghost 按鈕 + on 樣式
     $("btnOnlyUncat").classList.toggle("on", onlyUncat);
     $("btnOnlyNew").classList.toggle("on", onlyNew);
+    $("btnOnlyUncat").classList.toggle("primary", onlyUncat);
+    $("btnOnlyNew").classList.toggle("primary", onlyNew);
   }
 
   // words
@@ -227,39 +373,41 @@
     grid.innerHTML = "";
 
     for (const w of filtered){
-      const item = document.createElement("div");
-      item.className = "item";
+      const card = document.createElement("div");
+      card.className = "wordCard";
 
       const img = document.createElement("img");
-      img.className = "img";
+      img.className = "thumb";
       img.src = w.img || "";
       img.alt = w.zh || "";
-      img.onerror = () => { img.style.display="none"; };
+      img.onerror = () => { img.style.display = "none"; };
 
       const meta = document.createElement("div");
-      meta.className = "meta";
+      meta.className = "wordMeta";
 
       const ec = effectiveCatOf(w, catOv);
 
       meta.innerHTML = `
-        <p class="zh">${escapeHtml(w.zh||"")}</p>
-        <div class="en">${escapeHtml(w.en||"")}</div>
-        <span class="tag">${escapeHtml(ec || "未分類")}</span>
-        <div class="idline">id: ${escapeHtml(w.id||"")}</div>
+        <p class="zhBig">${escapeHtml(w.zh||"")}</p>
+        <div class="enText">${escapeHtml(w.en||"")}</div>
+        <div class="tagPill">🏷️ ${escapeHtml(ec || "未分類")}</div>
+        <div class="idText">id：${escapeHtml(w.id||"")}</div>
       `;
 
-      // category editor
-      const catBox = document.createElement("div");
-      catBox.className = "catbox";
+      const catRow = document.createElement("div");
+      catRow.className = "catRow";
+
       const catSel = document.createElement("select");
-      catSel.innerHTML = `<option value="">（未分類）</option>` + FIXED_CATEGORIES.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+      catSel.innerHTML =
+        `<option value="">（未分類）</option>` +
+        FIXED_CATEGORIES.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
       catSel.value = ec;
 
-      const btnSaveCat = document.createElement("button");
-      btnSaveCat.type = "button";
-      btnSaveCat.className = "btn";
-      btnSaveCat.textContent = "套用";
-      btnSaveCat.onclick = () => {
+      const btnApply = document.createElement("button");
+      btnApply.type = "button";
+      btnApply.className = "btn";
+      btnApply.textContent = "套用分類";
+      btnApply.onclick = () => {
         const map = loadCatOverride();
         const v = normalizeCat(catSel.value);
         if (v) map[w.id] = v;
@@ -269,17 +417,17 @@
         render();
       };
 
-      catBox.appendChild(catSel);
-      catBox.appendChild(btnSaveCat);
-      meta.appendChild(catBox);
+      catRow.appendChild(catSel);
+      catRow.appendChild(btnApply);
+      meta.appendChild(catRow);
 
-      const actions = document.createElement("div");
-      actions.className = "actions";
+      const right = document.createElement("div");
+      right.className = "rightCol";
 
       const star = document.createElement("button");
       star.type = "button";
       const on = newSet.has(w.id);
-      star.className = "star" + (on ? " on" : "");
+      star.className = "btn miniBtn" + (on ? " on" : "");
       star.textContent = on ? "⭐ 已加入" : "⭐ 新學";
       star.onclick = () => {
         const s = loadIdSet(LS_NEW_KEY());
@@ -290,15 +438,15 @@
         render();
       };
 
-      actions.appendChild(star);
-      item.appendChild(img);
-      item.appendChild(meta);
-      item.appendChild(actions);
-      grid.appendChild(item);
+      right.appendChild(star);
+
+      card.appendChild(img);
+      card.appendChild(meta);
+      card.appendChild(right);
+      grid.appendChild(card);
     }
   }
 
-  // batch add to new
   function handleBatchNew(){
     const filtered = getFilteredList();
     if (!filtered.length) return showNo("目前篩選結果 0 筆，無法批次加入新學");
@@ -313,7 +461,6 @@
     render();
   }
 
-  // batch change category
   function handleBatchCat(){
     const filtered = getFilteredList();
     if (!filtered.length) return showNo("目前篩選結果 0 筆，無法批次改分類");
@@ -372,7 +519,6 @@
   function toggleOnlyUncat(){ onlyUncat=!onlyUncat; saveAdminFilters(); clearStatus(); render(); }
   function toggleOnlyNew(){ onlyNew=!onlyNew; saveAdminFilters(); clearStatus(); render(); }
 
-  // backup/restore
   function handleBackup(){
     const backup = { exportedAt: new Date().toISOString(), localStorage: {} };
     const keys = Object.keys(localStorage).filter(k =>
