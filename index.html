@@ -3,421 +3,121 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>單字測驗（親子版）</title>
-
-  <!-- 跟 admin/tool 共用同一套可愛風 -->
+  <title>單字測驗</title>
   <link rel="stylesheet" href="./style.css" />
-
-  <style>
-    /* 測驗頁專用小補丁：讓它更像親子 App */
-    .page{ max-width:1100px; margin:0 auto; padding:0 14px; }
-
-    .quizTop{
-      display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
-      padding:14px 16px; margin-bottom:14px;
-    }
-    .quizTitle{ display:flex;align-items:center;gap:12px; }
-    .quizBadge{
-      width:44px;height:44px;border-radius:16px;
-      display:flex;align-items:center;justify-content:center;font-weight:1100;
-      background: linear-gradient(135deg, rgba(99,102,241,0.18), rgba(236,72,153,0.14));
-      border: 1px solid rgba(99,102,241,0.20);
-    }
-    .quizH1{ margin:0; font-size:18px; font-weight:1100; }
-    .quizSub{ margin-top:2px; color:var(--muted); font-weight:850; font-size:13px; line-height:1.5; }
-
-    .layout{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
-    }
-    @media (min-width: 980px){
-      .layout{ grid-template-columns: 1.55fr 0.45fr; align-items:start; }
-    }
-
-    .panel{ padding:14px; }
-    .row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
-    .controlRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-      margin-top:10px;
-    }
-    .searchHint{
-      margin-top:10px;
-      color: var(--muted);
-      font-weight: 900;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .questionCard{
-      padding: 12px;
-      border-radius: 22px;
-      border:1px solid rgba(15,23,42,0.08);
-      background: rgba(255,255,255,0.80);
-      box-shadow: 0 10px 25px rgba(15,23,42,0.05);
-    }
-
-    .qGrid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-    }
-    @media (min-width: 820px){
-      .qGrid{ grid-template-columns: 280px 1fr; }
-    }
-
-    .imgFrame{
-      border-radius:18px;
-      border:1px solid rgba(15,23,42,0.10);
-      background: linear-gradient(180deg, rgba(99,102,241,0.06), rgba(236,72,153,0.05));
-      padding:10px;
-    }
-    .qImg{
-      width:100%;
-      height:260px;
-      border-radius:14px;
-      object-fit:cover;
-      background:#f1f5f9;
-      display:block;
-    }
-
-    .progressPill{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      width:max-content;
-      padding:8px 12px;
-      border-radius:999px;
-      background: rgba(99,102,241,0.10);
-      border: 1px solid rgba(99,102,241,0.18);
-      color:#334155;
-      font-weight:1100;
-      font-size:13px;
-      line-height:1.4;
-    }
-    .pillNote{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      padding:8px 12px;
-      border-radius:999px;
-      background: rgba(236,72,153,0.10);
-      border: 1px solid rgba(236,72,153,0.16);
-      color:#334155;
-      font-weight:1100;
-      font-size:13px;
-      line-height:1.4;
-    }
-
-    .qTitleRow{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .qLabel{
-      font-size:12px;
-      font-weight:1100;
-      color: var(--muted);
-      letter-spacing:0.2px;
-      margin-bottom:4px;
-    }
-    .qZh{
-      font-size:28px;
-      font-weight:1150;
-      line-height:1.15;
-    }
-    .qEn{
-      font-size:20px;
-      font-weight:1100;
-      margin-top:4px;
-    }
-    .hidden{ display:none !important; }
-
-    .answerBlock{
-      margin-top:12px;
-      padding-top:12px;
-      border-top:1px dashed rgba(15,23,42,0.12);
-    }
-    .answerTop{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-bottom:10px;
-    }
-    .ruleHint{
-      color: var(--muted);
-      font-weight:1000;
-      font-size:13px;
-    }
-
-    .mcGrid{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-    }
-    @media (min-width: 560px){
-      .mcGrid{ grid-template-columns: 1fr 1fr; }
-    }
-
-    .choiceBtn{
-      border: 1px solid rgba(15,23,42,0.10);
-      background: rgba(255,255,255,0.92);
-      border-radius:18px;
-      padding:14px 14px;
-      font-size:18px;
-      font-weight:1100;
-      cursor:pointer;
-      text-align:center;
-      transition: transform .06s ease, box-shadow .2s ease, border-color .2s ease;
-    }
-    .choiceBtn:hover{
-      box-shadow: 0 10px 22px rgba(15,23,42,0.08);
-      border-color: rgba(99,102,241,0.22);
-    }
-    .choiceBtn:active{ transform: translateY(1px); }
-
-    .typeRow{
-      display:flex;
-      gap:10px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-    .typeInput{
-      flex:1;
-      min-width:240px;
-      font-size:18px;
-      padding:12px 14px;
-      border-radius:18px;
-    }
-
-    .result{
-      margin-top:12px;
-      min-height:24px;
-      font-weight:1100;
-      font-size:16px;
-    }
-    .result.ok{ color:#065f46; }
-    .result.no{ color:#9f1239; }
-
-    .navRow{ margin-top:10px; display:flex; gap:10px; flex-wrap:wrap; }
-
-    .sideCard{ padding:14px; position:sticky; top:12px; }
-    .sideTitle{ font-weight:1100; font-size:16px; margin-bottom:10px; }
-    .stats{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:10px;
-    }
-    .stat{
-      border:1px solid rgba(15,23,42,0.08);
-      border-radius:18px;
-      padding:12px;
-      background: rgba(255,255,255,0.75);
-    }
-    .statName{ color:var(--muted); font-weight:1000; font-size:13px; }
-    .statVal{ font-size:26px; font-weight:1150; margin-top:4px; }
-
-    .footerTiny{
-      margin-top:14px;
-      padding:12px 14px;
-      color:var(--muted);
-      font-weight:900;
-      font-size:13px;
-      text-align:center;
-      border-radius:18px;
-      border:1px solid rgba(15,23,42,0.06);
-      background: rgba(255,255,255,0.55);
-    }
-    code{
-      background: rgba(15,23,42,0.05);
-      border: 1px solid rgba(15,23,42,0.08);
-      padding:2px 8px;
-      border-radius:999px;
-      font-weight: 900;
-    }
-  </style>
 </head>
 
 <body>
-  <div class="bg">
-    <div class="page">
+  <div class="wrap">
 
-      <!-- 頂部 -->
-      <header class="card quizTop">
-        <div class="quizTitle">
-          <div class="quizBadge">🧩</div>
-          <div>
-            <h1 class="quizH1">單字測驗</h1>
-            <div class="quizSub">看圖＋中文 → 點🔊聽發音 → 作答 → 再顯示英文（親子可愛版）</div>
+    <!-- 頂部只保留標題，右上角放小小的今日狀態 -->
+    <header class="topbar">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">Aa</div>
+        <div class="brandText">
+          <div class="brandTitle">單字測驗</div>
+          <div class="brandSub">看圖＋中文 → 點🔊聽發音 → 選答案（答完再顯示英文）</div>
+        </div>
+      </div>
+
+      <!-- 右上角小狀態卡（縮小不佔畫面） -->
+      <div class="miniStats cardMini">
+        <div class="miniTitle">今日狀態</div>
+        <div class="miniGrid">
+          <div class="miniItem">
+            <div class="miniName">✅</div>
+            <div id="statCorrect" class="miniVal">0</div>
+          </div>
+          <div class="miniItem">
+            <div class="miniName">❌</div>
+            <div id="statWrong" class="miniVal">0</div>
+          </div>
+          <div class="miniItem">
+            <div class="miniName">錯題</div>
+            <div id="statWrongBank" class="miniVal">0</div>
+          </div>
+          <div class="miniItem">
+            <div class="miniName">新學</div>
+            <div id="statNewBank" class="miniVal">0</div>
           </div>
         </div>
+      </div>
+    </header>
 
-        <div class="topActions">
-          <a class="btn ghost" href="./admin.html" target="_blank" rel="noopener">🔧 後台</a>
-          <a class="btn ghost" href="./tool.html" target="_blank" rel="noopener">📥 匯入工具</a>
+    <!-- 測驗主卡：最大化 -->
+    <main class="card quizCard">
+      <div class="metaRow">
+        <div id="progress" class="pill">尚未開始</div>
+
+        <div class="metaRight">
+          <label class="chip">
+            小孩
+            <select id="kidSelect">
+              <option value="xigua">西瓜</option>
+              <option value="youzi">柚子</option>
+              <option value="xiaole">小樂</option>
+              <option value="apu">阿噗</option>
+              <option value="anan">安安</option>
+            </select>
+          </label>
+
+          <button id="btnStart" class="btn primary">開始</button>
+          <button id="btnReset" class="btn">重來</button>
         </div>
-      </header>
+      </div>
 
-      <main class="layout">
-        <!-- 左：測驗 -->
-        <section class="card panel">
-          <div class="row">
-            <div id="progress" class="progressPill">尚未開始</div>
-            <div class="pillNote">✅ 本輪題目不重複</div>
-            <div class="pillNote">✖ 錯題留到錯題本再練</div>
+      <section class="qWrap">
+        <!-- 長方形圖片 -->
+        <div class="imgBox">
+          <img id="qImg" class="qImg" alt="" />
+        </div>
+
+        <div class="qMain">
+          <div class="qTop">
+            <div>
+              <div class="label">中文</div>
+              <div id="qZh" class="zhBig">按「開始」出題</div>
+            </div>
+            <button id="btnSpeak" class="btn speak">🔊 發音</button>
           </div>
 
-          <div class="controlRow">
-            <label class="chip">
-              使用者
-              <select id="kidSelect">
-                <option value="xigua">西瓜</option>
-                <option value="youzi">柚子</option>
-                <option value="xiaole">小樂</option>
-                <option value="apu">阿噗</option>
-                <option value="anan">安安</option>
-              </select>
-            </label>
-
-            <label class="chip">
-              題庫
-              <select id="poolSelect">
-                <option value="all" selected>全部</option>
-                <option value="new">新學 ⭐</option>
-                <option value="wrong">錯題本 ❗</option>
-              </select>
-            </label>
-
-            <label class="chip">
-              分類
-              <select id="catSelect">
-                <option value="">全部</option>
-              </select>
-            </label>
-
-            <label class="chip">
-              題數
-              <select id="numQuestions">
-                <option value="10">10</option>
-                <option value="15">15</option>
-                <option value="20" selected>20</option>
-                <option value="30">30</option>
-                <option value="50">50</option>
-              </select>
-            </label>
-
-            <label class="chip">
-              避開最近
-              <select id="avoidDays">
-                <option value="0">不避開</option>
-                <option value="1">1 天</option>
-                <option value="3" selected>3 天</option>
-                <option value="5">5 天</option>
-                <option value="7">7 天</option>
-              </select>
-            </label>
-
-            <button id="btnStart" class="btn primary">開始</button>
-            <button id="btnReset" class="btn ghost">重來</button>
+          <div class="enRow">
+            <div class="label">英文</div>
+            <div id="qEn" class="enBig hidden"></div>
           </div>
 
-          <div class="questionCard" style="margin-top:12px;">
-            <div class="qGrid">
-              <div class="imgFrame">
-                <img id="qImg" class="qImg" alt="" />
-              </div>
+          <!-- 四個大按鈕 -->
+          <div id="mcArea" class="choicesBig"></div>
 
-              <div>
-                <div class="qTitleRow">
-                  <div>
-                    <div class="qLabel">中文</div>
-                    <div id="qZh" class="qZh">按「開始」出題</div>
-                  </div>
-                  <button id="btnSpeak" class="btn speak">🔊 發音</button>
-                </div>
-
-                <div style="margin-top:10px;">
-                  <div class="qLabel">英文</div>
-                  <div id="qEn" class="qEn hidden"></div>
-                </div>
-
-                <div class="answerBlock">
-                  <div class="answerTop">
-                    <label class="chip">
-                      作答方式
-                      <select id="answerMode">
-                        <option value="mc" selected>選擇題</option>
-                        <option value="type">輸入</option>
-                      </select>
-                    </label>
-                    <div class="ruleHint">✔ 答對自動跳題｜✖ 答錯再按下一題</div>
-                  </div>
-
-                  <div id="mcArea" class="mcGrid"></div>
-
-                  <div id="typeArea" class="typeRow hidden">
-                    <input id="typeInput" class="typeInput" placeholder="輸入英文（不分大小寫）" />
-                    <button id="btnCheck" class="btn primary">送出</button>
-                  </div>
-
-                  <div id="result" class="result"></div>
-
-                  <div class="navRow">
-                    <button id="btnNext" class="btn primary hidden">下一題</button>
-                    <button id="btnShowEn" class="btn ghost hidden">顯示英文</button>
-                  </div>
-                </div>
-
-                <div class="searchHint">
-                  小提示：圖片請放在 <code>images/</code>，<code>img</code> 欄位例：<code>images/apple.jpg</code>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 右：統計 -->
-        <aside class="card sideCard">
-          <div class="sideTitle">今日狀態</div>
-          <div class="stats">
-            <div class="stat">
-              <div class="statName">本輪正確</div>
-              <div id="statCorrect" class="statVal">0</div>
-            </div>
-            <div class="stat">
-              <div class="statName">本輪錯誤</div>
-              <div id="statWrong" class="statVal">0</div>
-            </div>
-            <div class="stat">
-              <div class="statName">錯題本</div>
-              <div id="statWrongBank" class="statVal">0</div>
-            </div>
-            <div class="stat">
-              <div class="statName">新學</div>
-              <div id="statNewBank" class="statVal">0</div>
-            </div>
+          <!-- 輸入（若你的 app.js 有用到就保留） -->
+          <div id="typeArea" class="typeRow hidden">
+            <input id="typeInput" class="typeInput" placeholder="輸入英文（不分大小寫）" />
+            <button id="btnCheck" class="btn primary">送出</button>
           </div>
 
-          <div style="margin-top:12px;color:var(--muted);font-weight:900;line-height:1.6;font-size:13px;">
-            你可以用「後台」標新學、改分類；用「匯入工具」貼 Excel 批次更新。
-          </div>
-        </aside>
-      </main>
+          <div id="result" class="result"></div>
 
-      <footer class="footerTiny">
-        測驗（index.html）｜後台（admin.html）｜匯入（tool.html）
-      </footer>
-    </div>
+          <div class="navRow">
+            <button id="btnNext" class="btn primary hidden">下一題</button>
+            <button id="btnShowEn" class="btn ghost hidden">顯示英文</button>
+          </div>
+        </div>
+      </section>
+
+      <div class="footNote">
+        小提醒：圖片放在 <code>images/</code>，<code>img</code> 例：<code>images/apple.jpg</code>
+      </div>
+    </main>
+
+    <!-- ✅ 連結移到底部（你要的） -->
+    <footer class="bottomLinks">
+      <a class="linkBtn" href="./index.html">🏠 測驗</a>
+      <a class="linkBtn" href="./admin.html" target="_blank" rel="noopener">🔧 後台</a>
+      <a class="linkBtn" href="./tool.html" target="_blank" rel="noopener">📥 匯入工具</a>
+    </footer>
+
   </div>
 
-  <!-- 只載入測驗邏輯 -->
   <script src="./app.js"></script>
 </body>
 </html>
