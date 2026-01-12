@@ -300,18 +300,18 @@ function loadNewSet(kid) {
     })).filter(w => w.id && w.zh && w.en);
 
     // pool filter
-    let pool = words.slice();
-    if (settings.pool === "new") {
-      // 兩種支援：isNew=true 或 admin 另存 new-set（你目前 admin 若已做可再加）
-      if (settings.pool === "new") {
+let pool = words.slice();
+
+if (settings.pool === "new") {
   const newSet = loadNewSet(settings.kid);
   pool = pool.filter(w => newSet.has(w.id));
+
 } else if (settings.pool === "wrong") {
   pool = pool.filter(w => wrongSet.has(w.id));
+
 } else if (settings.pool === "cat" && settings.cat) {
   pool = pool.filter(w => w.cat === settings.cat);
 }
-
 
     // avoid filter
     let poolAvoided = pool.filter(w => !avoidSet.has(w.id));
