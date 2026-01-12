@@ -1,162 +1,108 @@
-<!doctype html>
-<html lang="zh-Hant">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>單字測驗</title>
-  <link rel="stylesheet" href="./style.css" />
-</head>
+:root{
+  --bg:#f3fbf6;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:#64748b;
 
-<body>
-  <div class="wrap">
+  --green:#22c55e;
+  --green2:#16a34a;
+  --greenSoft: rgba(34,197,94,0.10);
+  --bd: rgba(34,197,94,0.22);
+  --shadow: 0 18px 40px rgba(15,23,42,0.10);
 
-    <main class="card quizOnly">
-      <div class="metaRow">
-        <div id="progress" class="pill">準備中…</div>
-        <a class="linkMini" href="./home.html">⚙️ 重新選條件</a>
-      </div>
-
-      <section class="qWrap">
-        <div class="imgBox">
-          <img id="qImg" class="qImgRect" alt="" />
-        </div>
-
-        <div class="qMain">
-          <div class="qTop">
-            <div>
-              <div class="label">中文</div>
-              <div id="qZh" class="zhBig">載入中…</div>
-            </div>
-            <button id="btnSpeak" class="btn speak">🔊 發音</button>
-          </div>
-
-          <div id="mcArea" class="choicesBig"></div>
-
-          <div id="typeArea" class="typeRow hidden">
-            <input id="typeInput" class="typeInput" placeholder="Key in 英文（不分大小寫）" />
-            <button id="btnCheck" class="btn primary">送出</button>
-          </div>
-
-          <div id="result" class="result"></div>
-
-          <div class="navRow">
-            <button id="btnNext" class="btn primary hidden">下一題</button>
-          </div>
-        </div>
-      </section>
-    </main>
-
-  </div>
-
-  <script src="./app.js"></script>
-</body>
-</html>
-/* =========================
-   Home page (scoped)
-   不影響 index 測驗頁
-========================= */
-.homePage{
-  background: #f2fbf6;
+  --blue:#2563eb;
+  --blueSoft: rgba(37,99,235,0.12);
 }
 
-.homeShell{
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* ===== Home frame (像圖1手機框) ===== */
+.phoneFrame{
   max-width: 520px;
   margin: 0 auto;
-  padding: 18px 14px 28px;
-}
-
-.homeFrame{
-  border: 4px solid #22c55e;
+  padding: 14px;
+  border: 4px solid var(--green);
   border-radius: 28px;
-  background: #ffffff;
-  box-shadow: 0 18px 40px rgba(15,23,42,0.10);
+  background: #fff;
+  box-shadow: var(--shadow);
   overflow: hidden;
 }
 
 .homeHeader{
-  padding: 18px 18px 6px;
-  text-align: center;
+  text-align:center;
+  padding: 14px 10px 6px;
 }
-
 .homeTitle{
-  font-weight: 1100;
-  font-size: 28px;
+  font-weight: 1200;
+  font-size: 30px;
   letter-spacing: 1px;
-  color: #16a34a;
+  color: #166534;
 }
-
 .homeSub{
   margin-top: 6px;
   font-weight: 900;
   color: #15803d;
-  opacity: 0.9;
+}
+
+.homeMain{
+  padding: 6px 10px 14px;
+  display:flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .homeCard{
-  padding: 14px 18px 18px;
-}
-
-.homeHowto{
-  border: 2px solid rgba(34,197,94,0.25);
-  background: rgba(34,197,94,0.06);
-  border-radius: 18px;
-  padding: 12px 12px;
-  margin-bottom: 12px;
-}
-
-.homeHowtoTitle{
-  font-weight: 1100;
-  color: #166534;
-  margin-bottom: 6px;
-}
-
-.homeHowtoList{
-  margin: 0;
-  padding-left: 18px;
-  color: #166534;
-  font-weight: 850;
-  line-height: 1.55;
-}
-
-.homeSection{
-  margin-top: 12px;
-  border: 2px solid rgba(34,197,94,0.18);
+  border: 2px solid var(--bd);
   border-radius: 20px;
   padding: 12px;
-  background: #fff;
+  background:#fff;
 }
-
-.homeSectionTitle{
+.homeCard.soft{
+  background: rgba(34,197,94,0.06);
+}
+.homeCardTitle{
   font-weight: 1100;
   color: #166534;
   margin-bottom: 10px;
 }
-
-.homeForm{
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
+.howList{
+  margin:0;
+  padding-left: 18px;
+  color:#166534;
+  font-weight: 850;
+  line-height: 1.6;
 }
 
-.homeField{ display:block; }
-.homeLabel{
+.formGrid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.label{
   font-size: 12px;
   font-weight: 1000;
-  color: rgba(22,101,52,0.9);
+  color: rgba(22,101,52,0.95);
   margin-bottom: 6px;
 }
+.field{ display:block; }
 
-.homeSelect{
-  display: flex;
-  align-items: center;
+.selectRow{
+  display:flex;
+  align-items:center;
   gap: 10px;
   border: 2px solid rgba(34,197,94,0.18);
   border-radius: 18px;
-  background: #fff;
   padding: 10px 12px;
+  background:#fff;
 }
-
-.homeIcon{
+.ico{
   width: 34px;
   height: 34px;
   border-radius: 14px;
@@ -165,40 +111,37 @@
   justify-content:center;
   background: rgba(34,197,94,0.10);
   border: 1px solid rgba(34,197,94,0.18);
+  font-size: 16px;
 }
-
-.homeSelect select{
+select{
   width: 100%;
-  border: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  font-weight: 1000;
+  border:none;
+  outline:none;
+  background: transparent;
   font-size: 15px;
+  font-weight: 1000;
   padding: 8px 6px;
 }
 
-.homeActions{
-  margin-top: 12px;
-  display: grid;
+.btnStack{
+  display:grid;
   gap: 10px;
+  margin-top: 10px;
 }
-
-.homeGo{
-  border: none;
+.btnBigPrimary{
+  border:none;
   cursor:pointer;
   padding: 16px 14px;
   border-radius: 18px;
-  font-weight: 1100;
+  font-weight: 1200;
   font-size: 18px;
   color: #fff;
-  background: linear-gradient(180deg, #22c55e, #16a34a);
+  background: linear-gradient(180deg, var(--green), var(--green2));
   box-shadow: 0 14px 26px rgba(22,163,74,0.35);
 }
+.btnBigPrimary:active{ transform: translateY(1px); }
 
-.homeGo:active{ transform: translateY(1px); }
-
-.homeGhost{
+.btnBigGhost{
   display:block;
   text-align:center;
   text-decoration:none;
@@ -206,42 +149,279 @@
   border-radius: 18px;
   border: 2px dashed rgba(34,197,94,0.35);
   color: #166534;
-  font-weight: 1000;
+  font-weight: 1100;
   background: rgba(34,197,94,0.05);
 }
 
-.homeTools{
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 10px;
-}
-
-.homeToolBtn{
-  display:block;
-  text-decoration:none;
-  padding: 14px 14px;
-  border-radius: 18px;
-  border: 2px solid rgba(34,197,94,0.18);
-  background: #fff;
-  font-weight: 1100;
-  color: #166534;
-  text-align:center;
-}
-
-.homeFooter{
-  margin-top: 14px;
+.toolRow{
   display:flex;
   gap:10px;
-  justify-content:center;
   flex-wrap: wrap;
 }
-
-.homeFooterLink{
+.chipLink{
   text-decoration:none;
   padding: 12px 14px;
   border-radius: 16px;
   border: 2px solid rgba(34,197,94,0.18);
-  background: #fff;
-  font-weight: 1000;
-  color: #166534;
+  background:#fff;
+  font-weight: 1100;
+  color:#166534;
 }
+
+.homeFooter{
+  padding: 6px 12px 12px;
+  text-align:center;
+}
+.miniNote{
+  font-size: 12px;
+  font-weight: 850;
+  color: rgba(22,101,52,0.75);
+}
+
+/* ===== Quiz page (像圖2：大題目、大按鈕) ===== */
+.quizWrap{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px 14px 28px;
+}
+.quizTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap: 10px;
+  flex-wrap:wrap;
+  margin-bottom: 12px;
+}
+.statusPill{
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: rgba(37,99,235,0.10);
+  border: 1px solid rgba(37,99,235,0.18);
+  font-weight: 1100;
+  color: #1e3a8a;
+}
+.topLink{
+  text-decoration:none;
+  padding: 10px 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(15,23,42,0.10);
+  background:#fff;
+  font-weight: 1000;
+  color:#334155;
+}
+
+.quizCard{
+  background:#fff;
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 22px;
+  box-shadow: 0 18px 40px rgba(15,23,42,0.10);
+  padding: 16px;
+}
+
+.qTitle{
+  font-size: 40px;
+  font-weight: 1200;
+  text-align:center;
+  padding: 12px 10px 6px;
+}
+@media (max-width: 480px){
+  .qTitle{ font-size: 32px; }
+}
+
+.imgFrame{
+  margin: 10px auto 0;
+  max-width: 840px;
+  border-radius: 20px;
+  border: 1px solid rgba(15,23,42,0.10);
+  padding: 10px;
+  background:#fff;
+}
+.qImg{
+  width:100%;
+  height: 320px;
+  border-radius: 16px;
+  object-fit: cover;
+  background:#e2e8f0;
+  display:block;
+}
+@media (max-width: 480px){
+  .qImg{ height: 260px; }
+}
+
+.audioRow{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+  margin: 12px 0 6px;
+}
+.btnAudio{
+  border: 2px solid rgba(37,99,235,0.18);
+  background: rgba(37,99,235,0.08);
+  color:#1e3a8a;
+  font-weight: 1100;
+  padding: 12px 14px;
+  border-radius: 16px;
+  cursor:pointer;
+}
+.btnOxford{
+  text-decoration:none;
+  border: 2px solid rgba(15,23,42,0.12);
+  background:#fff;
+  color:#0f172a;
+  font-weight: 1100;
+  padding: 12px 14px;
+  border-radius: 16px;
+}
+
+.choiceGrid{
+  max-width: 840px;
+  margin: 12px auto 0;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 720px){
+  .choiceGrid{ grid-template-columns: 1fr 1fr; }
+}
+
+.choiceBtn{
+  border: 2px solid rgba(15,23,42,0.12);
+  background:#fff;
+  border-radius: 20px;
+  padding: 18px 16px;
+  font-size: 24px;
+  font-weight: 1200;
+  cursor:pointer;
+  box-shadow: 0 12px 24px rgba(15,23,42,0.06);
+}
+.choiceBtn:hover{ border-color: rgba(37,99,235,0.28); }
+.choiceBtn:active{ transform: translateY(1px); }
+
+.typeArea{
+  max-width: 840px;
+  margin: 12px auto 0;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  justify-content:center;
+}
+.typeInput{
+  flex: 1;
+  min-width: 260px;
+  border: 2px solid rgba(15,23,42,0.12);
+  border-radius: 18px;
+  padding: 16px 14px;
+  font-size: 22px;
+  font-weight: 1100;
+  outline:none;
+}
+.btnCheck{
+  border:none;
+  background: var(--blue);
+  color:#fff;
+  font-weight: 1200;
+  padding: 16px 16px;
+  border-radius: 18px;
+  cursor:pointer;
+  min-width: 120px;
+}
+
+.resultLine{
+  min-height: 28px;
+  margin-top: 12px;
+  text-align:center;
+  font-weight: 1200;
+  font-size: 18px;
+}
+.resultOk{ color:#065f46; }
+.resultNo{ color:#9f1239; }
+
+.navRow{
+  margin-top: 10px;
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.btnNext, .btnRetry{
+  border: 1px solid rgba(15,23,42,0.10);
+  background:#fff;
+  padding: 12px 14px;
+  border-radius: 16px;
+  font-weight: 1100;
+  cursor:pointer;
+}
+.btnNext{
+  background: rgba(37,99,235,0.10);
+  border-color: rgba(37,99,235,0.16);
+  color:#1e3a8a;
+}
+.btnRetry{
+  background: rgba(236,72,153,0.08);
+  border-color: rgba(236,72,153,0.18);
+  color:#9d174d;
+}
+
+.hidden{ display:none !important; }
+
+/* ===== Parent page ===== */
+.parentWrap{
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 18px 14px 28px;
+}
+.parentTop{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-bottom: 12px;
+}
+.parentTitle{
+  font-size: 22px;
+  font-weight: 1200;
+}
+.parentCard{
+  background:#fff;
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 22px;
+  box-shadow: 0 18px 40px rgba(15,23,42,0.10);
+  padding: 16px;
+}
+.parentHint{
+  color:#475569;
+  font-weight: 900;
+  margin-bottom: 12px;
+}
+
+.kidStatsGrid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 720px){
+  .kidStatsGrid{ grid-template-columns: 1fr 1fr; }
+}
+.kidCard{
+  border: 1px solid rgba(15,23,42,0.10);
+  border-radius: 20px;
+  padding: 14px;
+  background:#fff;
+}
+.kidName{
+  font-size: 18px;
+  font-weight: 1200;
+  margin-bottom: 8px;
+}
+.kv{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  padding: 8px 0;
+  border-top: 1px dashed rgba(15,23,42,0.10);
+  font-weight: 1000;
+}
+.kv:first-of-type{ border-top:none; }
+.kv span{ color:#334155; }
