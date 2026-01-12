@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>單字後台（新學標註）</title>
+  <style>
+    :root{--bg:#f6f7fb;--card:#fff;--text:#111827;--muted:#6b7280;--bd:#e5e7eb}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans TC",sans-serif;background:var(--bg);color:var(--text)}
+    .wrap{max-width:1080px;margin:18px auto;padding:0 14px}
+    .card{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:14px}
+    h1{margin:0 0 10px;font-size:18px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .pill{display:flex;gap:8px;align-items:center;font-weight:800;border:1px solid var(--bd);background:#fff;border-radius:999px;padding:8px 12px}
+    input,select{border:1px solid var(--bd);border-radius:10px;padding:8px 10px;font-size:14px}
+    .btn{border:1px solid var(--bd);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;font-weight:900}
+    .btn.primary{background:#111827;color:#fff;border-color:#111827}
+    .muted{color:var(--muted);font-weight:700}
+    .grid{display:grid;grid-template-columns:repeat(1,1fr);gap:10px;margin-top:12px}
+    @media(min-width:720px){.grid{grid-template-columns:repeat(2,1fr)}}
+    @media(min-width:980px){.grid{grid-template-columns:repeat(3,1fr)}}
+    .item{border:1px solid var(--bd);border-radius:14px;padding:10px;display:flex;gap:10px;align-items:flex-start;background:#fff}
+    .img{width:72px;height:72px;border-radius:12px;border:1px solid var(--bd);object-fit:cover;background:#f3f4f6}
+    .meta{flex:1;min-width:0}
+    .zh{font-size:16px;font-weight:900;margin:0}
+    .en{margin:3px 0 0;font-weight:800}
+    .cat{margin:6px 0 0;display:inline-block;font-size:12px;font-weight:900;color:#374151;background:#f3f4f6;border:1px solid var(--bd);padding:3px 8px;border-radius:999px}
+    .star{border:1px solid var(--bd);border-radius:12px;padding:8px 10px;font-weight:900;background:#fff;cursor:pointer;white-space:nowrap}
+    .star.on{background:#111827;color:#fff;border-color:#111827}
+    .topnote{margin-top:6px;font-size:13px;color:var(--muted);font-weight:700;line-height:1.6}
+    .count{font-weight:900}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>單字後台（新學 ⭐ 標註）</h1>
+
+      <div class="row">
+        <div class="pill">
+          使用者
+          <select id="kidSelect">
+            <option value="xigua">西瓜</option>
+            <option value="youzi">柚子</option>
+            <option value="xiaole">小樂</option>
+            <option value="apu">阿噗</option>
+            <option value="anan">安安</option>
+          </select>
+        </div>
+
+        <div class="pill">
+          分類
+          <select id="catSelect">
+            <option value="">全部</option>
+          </select>
+        </div>
+
+        <input id="q" placeholder="搜尋：中文 / 英文 / id" style="flex:1;min-width:220px;" />
+
+        <button class="btn" id="btnClearNew" type="button">清空此小孩的新學</button>
+        <button class="btn primary" id="btnExportNew" type="button">匯出新學清單</button>
+      </div>
+
+      <div class="topnote">
+        目前使用者 <span id="kidName" class="count"></span> 的新學數：<span id="newCount" class="count">0</span>　
+        ｜目前顯示：<span id="shownCount" class="count">0</span> / <span id="totalCount" class="count">0</span>
+        <br/>
+        注意：此後台標註的新學是存於「此瀏覽器/此裝置」(localStorage)。若要跨裝置同步，需要再加後端/登入。
+      </div>
+
+      <div id="status" class="topnote"></div>
+      <div id="grid" class="grid"></div>
+    </div>
+  </div>
+
+<script>
+  const WORDS_URL = "./words.json";
+  const $ = (id) => document.getElementById(id);
+
+  let kidId = localStorage.getItem("vocab_kid_active") || "xigua";
+  function LS_NEW_KEY(){ return `vocab_new_v1_${kidId}`; }
+
+  let words = [];
+
+  function loadNewSet(){
+    try{
+      const arr = JSON.parse(localStorage.getItem(LS_NEW_KEY()) || "[]");
+      return new Set(Array.isArray(arr) ? arr : []);
+    }catch{
+      return new Set();
+    }
+  }
+  function saveNewSet(set){
+    localStorage.setItem(LS_NEW_KEY(), JSON.stringify(Array.from(set)));
+  }
+
+  function uniqCats(){
+    const s = new Set();
+    for (const w of words) {
+      const c = String(w.cat || "").trim();
+      if (c) s.add(c);
+    }
+    return Array.from(s).sort((a,b)=>a.localeCompare(b, "zh-Hant"));
+  }
+
+  function renderCatOptions(){
+    const catSel = $("catSelect");
+    const keep = catSel.value || "";
+    catSel.innerHTML = `<option value="">全部</option>`;
+    for (const c of uniqCats()){
+      const opt = document.createElement("option");
+      opt.value = c;
+      opt.textContent = c;
+      catSel.appendChild(opt);
+    }
+    if ([...catSel.options].some(o => o.value === keep)) catSel.value = keep;
+  }
+
+  function matches(w, q){
+    q = (q||"").trim().toLowerCase();
+    if (!q) return true;
+    return (
+      String(w.id||"").toLowerCase().includes(q) ||
+      String(w.zh||"").toLowerCase().includes(q) ||
+      String(w.en||"").toLowerCase().includes(q) ||
+      String(w.cat||"").toLowerCase().includes(q)
+    );
+  }
+
+  function download(filename, text) {
+    const blob = new Blob([text], { type: "application/json;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function render(){
+    const grid = $("grid");
+    const q = $("q").value || "";
+    const cat = $("catSelect").value || "";
+    const newSet = loadNewSet();
+
+    const filtered = words.filter(w => {
+      if (cat && String(w.cat||"").trim() !== cat) return false;
+      return matches(w, q);
+    });
+
+    $("kidName").textContent = $("kidSelect").selectedOptions[0]?.textContent || kidId;
+    $("newCount").textContent = newSet.size;
+    $("shownCount").textContent = filtered.length;
+    $("totalCount").textContent = words.length;
+
+    grid.innerHTML = "";
+    for (const w of filtered){
+      const item = document.createElement("div");
+      item.className = "item";
+
+      const img = document.createElement("img");
+      img.className = "img";
+      img.src = w.img || "";
+      img.alt = w.zh || "";
+      img.onerror = () => { img.style.display="none"; };
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.innerHTML = `
+        <p class="zh">${w.zh || ""}</p>
+        <div class="en">${w.en || ""}</div>
+        <span class="cat">${w.cat ? w.cat : "未分類"}</span>
+        <div class="muted" style="margin-top:6px;">id: ${w.id}</div>
+      `;
+
+      const star = document.createElement("button");
+      star.type = "button";
+      const on = newSet.has(w.id);
+      star.className = "star" + (on ? " on" : "");
+      star.textContent = on ? "⭐ 已加入" : "⭐ 新學";
+
+      star.onclick = () => {
+        const s = loadNewSet();
+        if (s.has(w.id)) s.delete(w.id);
+        else s.add(w.id);
+        saveNewSet(s);
+        render();
+      };
+
+      item.appendChild(img);
+      item.appendChild(meta);
+      item.appendChild(star);
+      grid.appendChild(item);
+    }
+  }
+
+  async function init(){
+    $("kidSelect").value = kidId;
+
+    $("kidSelect").addEventListener("change", (e) => {
+      kidId = e.target.value;
+      localStorage.setItem("vocab_kid_active", kidId);
+      render();
+    });
+
+    $("catSelect").addEventListener("change", render);
+    $("q").addEventListener("input", render);
+
+    $("btnClearNew").addEventListener("click", () => {
+      localStorage.removeItem(LS_NEW_KEY());
+      render();
+    });
+
+    $("btnExportNew").addEventListener("click", () => {
+      const set = loadNewSet();
+      const payload = {
+        kidId,
+        kidName: $("kidSelect").selectedOptions[0]?.textContent || kidId,
+        exportedAt: new Date().toISOString(),
+        newIds: Array.from(set)
+      };
+      download(`new-words-${kidId}.json`, JSON.stringify(payload, null, 2));
+    });
+
+    try{
+      const res = await fetch(WORDS_URL, { cache: "no-store" });
+      words = await res.json();
+      words = (words || []).filter(w => w && w.id && w.zh && w.en);
+      renderCatOptions();
+      render();
+      $("status").textContent = "";
+    }catch(err){
+      console.error(err);
+      $("status").innerHTML = `<span style="color:#9f1239;font-weight:900;">載入失敗：請確認 words.json 在同一個 repo 根目錄</span>`;
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
