@@ -6,6 +6,8 @@
   --bd: rgba(15, 23, 42, 0.10);
   --shadow: 0 10px 25px rgba(15, 23, 42, 0.06);
   --primary:#111827;
+  --soft1: rgba(99,102,241,0.10);
+  --soft2: rgba(236,72,153,0.10);
 }
 
 *{ box-sizing:border-box; }
@@ -45,25 +47,6 @@ body{
 .brandTitle{ font-size:18px; font-weight:1000; }
 .brandSub{ font-size:13px; color:var(--muted); font-weight:800; margin-top:2px; }
 
-.h2{ margin: 0 0 10px; font-size: 16px; font-weight: 1100; }
-.hr{ border:none; border-top:1px solid rgba(15,23,42,0.08); margin: 14px 0; }
-
-.formGrid{
-  display:grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-}
-@media (min-width: 820px){
-  .formGrid{ grid-template-columns: 1fr 1fr; }
-}
-.field{ display:block; }
-.fieldLabel{
-  color: var(--muted);
-  font-weight: 1000;
-  font-size: 12px;
-  margin-bottom: 6px;
-}
-
 select, input{
   width: 100%;
   border:1px solid rgba(15,23,42,0.10);
@@ -102,28 +85,9 @@ select, input{
   border-color: rgba(99,102,241,0.22);
 }
 .btnBig{ padding: 14px 16px; border-radius: 16px; }
+.btnStartHuge{ width: 100%; }
 
-.btnBar{
-  margin-top: 14px;
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.toolLinks{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
-}
-
-.hint{
-  margin-top: 12px;
-  color: var(--muted);
-  font-weight: 850;
-  font-size: 13px;
-  line-height: 1.6;
-}
-
+/* ===== 測驗頁（最早極簡大圖大選項） ===== */
 .metaRow{
   display:flex;
   align-items:center;
@@ -132,7 +96,6 @@ select, input{
   flex-wrap:wrap;
   margin-bottom: 12px;
 }
-
 .pill{
   padding: 8px 12px;
   border-radius: 999px;
@@ -159,7 +122,6 @@ select, input{
   padding: 10px;
 }
 
-/* ✅ 長方形大圖（最早那種） */
 .qImgRect{
   width:100%;
   height: 280px;
@@ -173,7 +135,6 @@ select, input{
 }
 
 .qMain{ padding: 4px 2px; }
-
 .qTop{
   display:flex;
   align-items:flex-start;
@@ -181,14 +142,12 @@ select, input{
   gap:10px;
   flex-wrap:wrap;
 }
-
 .label{
   color: var(--muted);
   font-weight: 1000;
   font-size: 12px;
   margin-bottom: 4px;
 }
-
 .zhBig{
   font-size: 34px;
   font-weight: 1100;
@@ -200,7 +159,6 @@ select, input{
 
 .hidden{ display:none !important; }
 
-/* ✅ 四個超大選項 */
 .choicesBig{
   margin-top: 14px;
   display:grid;
@@ -260,6 +218,7 @@ select, input{
   flex-wrap:wrap;
 }
 
+/* footer links */
 .bottomLinks{
   margin-top: 14px;
   display:flex;
@@ -267,13 +226,17 @@ select, input{
   flex-wrap:wrap;
   justify-content:center;
 }
+.bottomLinksFixed{
+  position: relative;
+  z-index: 5; /* ✅ 保證可點 */
+}
 .linkBtn{
   text-decoration:none;
-  padding:10px 12px;
-  border-radius: 14px;
+  padding:12px 14px;
+  border-radius: 16px;
   border:1px solid var(--bd);
   background:#fff;
-  font-weight: 950;
+  font-weight: 1000;
   color: var(--text);
   box-shadow: var(--shadow);
 }
@@ -286,3 +249,109 @@ code{
   border-radius: 999px;
   font-weight: 900;
 }
+
+/* ===== 入口頁（大按鈕親子風） ===== */
+.entranceCard{
+  background:
+    radial-gradient(1200px 400px at 20% 0%, var(--soft1), transparent 60%),
+    radial-gradient(1200px 400px at 80% 10%, var(--soft2), transparent 55%),
+    #fff;
+}
+.entranceGrid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 900px){
+  .entranceGrid{ grid-template-columns: 1.2fr 0.8fr; }
+}
+.entrancePanel{
+  background: rgba(255,255,255,0.85);
+  border: 1px solid rgba(15,23,42,0.08);
+  border-radius: 18px;
+  padding: 12px;
+  box-shadow: 0 10px 24px rgba(15,23,42,0.05);
+}
+.panelTitle{
+  font-weight: 1100;
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.bigPickGrid{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 600px){
+  .bigPickGrid{ grid-template-columns: 1fr 1fr; }
+}
+
+.pickBtn{
+  width:100%;
+  text-align:left;
+  border-radius: 18px;
+  padding: 14px 14px;
+  cursor:pointer;
+  border: 1px solid rgba(15,23,42,0.10);
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 10px 22px rgba(15,23,42,0.06);
+  transition: transform .06s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.pickBtn:hover{
+  transform: translateY(-1px);
+  border-color: rgba(99,102,241,0.22);
+  box-shadow: 0 14px 28px rgba(15,23,42,0.08);
+}
+.pickTop{
+  color: var(--muted);
+  font-weight: 1000;
+  font-size: 12px;
+}
+.pickVal{
+  margin-top: 6px;
+  font-weight: 1150;
+  font-size: 20px; /* ✅ 大 */
+  line-height: 1.2;
+}
+.pickHint{
+  margin-top: 6px;
+  color: var(--muted);
+  font-weight: 900;
+  font-size: 12px;
+}
+
+.entranceActions{
+  margin-top: 12px;
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+@media (min-width: 600px){
+  .entranceActions{ grid-template-columns: 1fr 1fr; }
+}
+
+.toolPanel .toolCard{
+  display:flex;
+  gap: 12px;
+  align-items:center;
+  padding: 14px;
+  border-radius: 18px;
+  border: 1px solid rgba(15,23,42,0.10);
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 10px 22px rgba(15,23,42,0.06);
+  text-decoration:none;
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.toolEmoji{
+  width:44px;height:44px;border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  background: radial-gradient(circle at 30% 30%, var(--soft1), transparent 70%),
+              radial-gradient(circle at 70% 30%, var(--soft2), transparent 65%),
+              #fff;
+  border: 1px solid rgba(15,23,42,0.08);
+  font-size: 20px;
+}
+.toolName{ font-weight:1150; font-size:16px; }
+.toolDesc{ margin-top:2px; color: var(--muted); font-weight:900; font-size: 13px; line-height:1.4; }
