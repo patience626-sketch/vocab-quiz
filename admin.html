@@ -76,6 +76,22 @@
 
 <script>
   const WORDS_URL = "./words.json";
+  // ✅ 你指定的分類（可自行增減、調整順序）
+const FIXED_CATEGORIES = [
+  "水果",
+  "動物",
+  "交通工具",
+  "食物",
+  "顏色",
+  "身體",
+  "家庭",
+  "學校用品",
+  "自然",
+  "運動",
+  "職業",
+  "其他"
+];
+
   const $ = (id) => document.getElementById(id);
 
   let kidId = localStorage.getItem("vocab_kid_active") || "xigua";
@@ -96,13 +112,28 @@
   }
 
   function uniqCats(){
-    const s = new Set();
-    for (const w of words) {
-      const c = String(w.cat || "").trim();
-      if (c) s.add(c);
-    }
-    return Array.from(s).sort((a,b)=>a.localeCompare(b, "zh-Hant"));
+  const fromData = new Set();
+  for (const w of words) {
+    const c = String(w.cat || "").trim();
+    if (c) fromData.add(c);
   }
+
+  const out = [];
+  const fixed = new Set(FIXED_CATEGORIES.map(x => String(x).trim()).filter(Boolean));
+
+  // 先放你指定的順序
+  for (const c of FIXED_CATEGORIES) {
+    const cc = String(c).trim();
+    if (cc) out.push(cc);
+  }
+
+  // 再補上資料裡有、但你清單沒列到的分類（避免漏）
+  const extras = Array.from(fromData).filter(c => !fixed.has(c))
+    .sort((a,b)=>a.localeCompare(b, "zh-Hant"));
+
+  return out.concat(extras);
+}
+
 
   function renderCatOptions(){
     const catSel = $("catSelect");
