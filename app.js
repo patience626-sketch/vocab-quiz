@@ -6,14 +6,17 @@
     { id: "xigua", name: "西瓜" },
     { id: "youzi", name: "柚子" },
     { id: "xiaole", name: "小樂" },
-    { id: "apu",   name: "阿噗" },
-    { id: "anan",  name: "安安" },
+    { id: "apu", name: "阿噗" },
+    { id: "anan", name: "安安" },
   ];
 
   // per kid storage
-  const WRONG_KEY = (kid) => `vocab_wrong_${kid}`;     // array of word ids
-  const SEEN_KEY  = (kid) => `vocab_seen_${kid}`;      // { YYYY-MM-DD: [ids] }
-  const STATS_KEY = (kid) => `vocab_stats_${kid}`;     // { YYYY-MM-DD: {correct, wrong, total} }
+  const WRONG_KEY = (kid) => `vocab_wrong_${kid}`;   // array of word ids
+  const SEEN_KEY  = (kid) => `vocab_seen_${kid}`;    // { YYYY-MM-DD: [ids] }
+  const STATS_KEY = (kid) => `vocab_stats_${kid}`;   // { YYYY-MM-DD: {correct, wrong, total} }
+
+  // ✅ 方案B：新學清單（依你 admin 的 key 命名：vocab_new_v1_xigua）
+  const NEW_KEY   = (kid) => `vocab_new_v1_${kid}`;  // value can be ["id"...] OR {"id":true,...}
 
   const $ = (id) => document.getElementById(id);
   const norm = (s) => String(s || "").trim();
@@ -26,6 +29,7 @@
     const day = String(d.getDate()).padStart(2, "0");
     return `${y}-${m}-${day}`;
   }
+
   function dateMinusDays(days) {
     const d = new Date();
     d.setDate(d.getDate() - days);
@@ -69,7 +73,6 @@
 
   // ===== Audio: Oxford-ish mp3 -> Google TTS -> SpeechSynthesis
   function oxfordSoundUrl(en) {
-    // Google Dictionary Oxford sounds (常見可用)
     // 例: https://ssl.gstatic.com/dictionary/static/sounds/oxford/apple--_us_1.mp3
     const w = lower(en).replace(/\s+/g, "_");
     return `https://ssl.gstatic.com/dictionary/static/sounds/oxford/${encodeURIComponent(w)}--_us_1.mp3`;
@@ -79,7 +82,6 @@
     return `https://translate.google.com/translate_tts?ie=UTF-8&q=${q}&tl=en&client=tw-ob`;
   }
   async function playAudioWithFallback(en) {
-    // 1) try oxford mp3
     const oxUrl = oxfordSoundUrl(en);
     try {
       const a1 = new Audio(oxUrl);
@@ -87,7 +89,6 @@
       return;
     } catch {}
 
-    // 2) try google tts
     const gUrl = googleTtsUrl(en);
     try {
       const a2 = new Audio(gUrl);
@@ -95,7 +96,6 @@
       return;
     } catch {}
 
-    // 3) speech synthesis
     try {
       const u = new SpeechSynthesisUtterance(en);
       u.lang = "en-US";
@@ -104,11 +104,10 @@
     } catch {}
   }
   function oxfordLink(en) {
-    // 點開 Oxford Learner's Dictionaries 搜尋頁（穩定不受 CORS 影響）
     return `https://www.oxfordlearnersdictionaries.com/search/english/?q=${encodeURIComponent(en)}`;
   }
 
-  // ===== Seen / Wrong / Stats
+  // ===== Seen / Wrong / Stats / New
   function loadWrongSet(kid) {
     const arr = loadJSON(WRONG_KEY(kid), []);
     return new Set(Array.isArray(arr) ? arr : []);
@@ -116,22 +115,20 @@
   function saveWrongSet(kid, set) {
     saveJSON(WRONG_KEY(kid), Array.from(set));
   }
-  // ===== NEW (方案B)：新學清單（從 localStorage 讀，依小孩分開）=====
-// ⚠️ 如果 admin 用的 key 不同，只要改這一行即可
-const NEW_KEY = (kid) => vocab_new_v1_xigua
 
-function loadNewSet(kid) {
-  const raw = loadJSON(NEW_KEY(kid), null);
+  // ✅ 方案B：從 localStorage 讀「新學」
+  function loadNewSet(kid) {
+    const raw = loadJSON(NEW_KEY(kid), null);
 
-  // 允許 admin 存成 array 或 object 兩種格式
-  if (Array.isArray(raw)) {
-    return new Set(raw.map(norm).filter(Boolean));
+    if (Array.isArray(raw)) {
+      return new Set(raw.map(norm).filter(Boolean));
+    }
+    if (raw && typeof raw === "object") {
+      return new Set(Object.keys(raw).map(norm).filter(Boolean));
+    }
+    return new Set();
   }
-  if (raw && typeof raw === "object") {
-    return new Set(Object.keys(raw).map(norm).filter(Boolean));
-  }
-  return new Set();
-}
+
   function loadSeenMap(kid) {
     const m = loadJSON(SEEN_KEY(kid), {});
     return (m && typeof m === "object") ? m : {};
@@ -161,20 +158,6 @@ function loadNewSet(kid) {
     const s = loadJSON(STATS_KEY(kid), {});
     return (s && typeof s === "object") ? s : {};
   }
-  // ===== NEW (方案 B)：新學清單（localStorage）=====
-const NEW_KEY = (kid) => `vocab_new_v1_${kid}`;
-
-function loadNewSet(kid) {
-  try {
-    const raw = JSON.parse(localStorage.getItem(NEW_KEY(kid)));
-    if (Array.isArray(raw)) return new Set(raw.map(String));
-    if (raw && typeof raw === "object") return new Set(Object.keys(raw));
-    return new Set();
-  } catch {
-    return new Set();
-  }
-}
-
   function saveStats(kid, stats) {
     saveJSON(STATS_KEY(kid), stats);
   }
@@ -222,7 +205,12 @@ function loadNewSet(kid) {
     const mode = $("mode");
     const btnStart = $("btnStart");
 
-    let settings = loadSettings();
+    if (!kid || !pool || !cat || !catWrap || !numQ || !avoidDays || !mode || !btnStart) {
+      // 不是首頁或首頁缺元素就不要跑，避免 JS 中斷
+      return;
+    }
+
+    const settings = loadSettings();
 
     // load categories from words.json
     let words = [];
@@ -231,10 +219,13 @@ function loadNewSet(kid) {
     } catch {
       words = [];
     }
-    const cats = Array.from(new Set(words.map(w => norm(w.cat)).filter(Boolean)))
-      .sort((a,b)=>a.localeCompare(b, "zh-Hant"));
 
-    cat.innerHTML = `<option value="">全部分類</option>` + cats.map(c=>`<option value="${c}">${c}</option>`).join("");
+    const cats = Array.from(new Set(words.map(w => norm(w.cat)).filter(Boolean)))
+      .sort((a, b) => a.localeCompare(b, "zh-Hant"));
+
+    cat.innerHTML =
+      `<option value="">全部分類</option>` +
+      cats.map(c => `<option value="${c}">${c}</option>`).join("");
 
     // apply settings to UI
     kid.value = settings.kid;
@@ -247,7 +238,7 @@ function loadNewSet(kid) {
     const syncCatVisibility = () => {
       const show = pool.value === "cat";
       catWrap.style.display = show ? "" : "none";
-      if (!show) cat.value = ""; // 非分類模式就不帶 cat
+      if (!show) cat.value = "";
     };
     pool.addEventListener("change", syncCatVisibility);
     syncCatVisibility();
@@ -283,9 +274,14 @@ function loadNewSet(kid) {
       btnRetry: $("btnRetry"),
     };
 
+    if (!el.statusPill || !el.qZh || !el.qImg || !el.btnSpeak || !el.btnOxford || !el.result) {
+      return;
+    }
+
     const settings = loadSettings();
     const wrongSet = loadWrongSet(settings.kid);
     const avoidSet = getAvoidSet(settings.kid, settings.avoidDays);
+    const newSet = loadNewSet(settings.kid);
 
     let words = await loadWords();
 
@@ -296,27 +292,22 @@ function loadNewSet(kid) {
       en: norm(w.en),
       img: norm(w.img),
       cat: norm(w.cat),
-      isNew: !!w.isNew, // 你若有在 words.json 用 isNew 標記也會吃到（沒有也沒關係）
     })).filter(w => w.id && w.zh && w.en);
 
     // pool filter
-let pool = words.slice();
+    let pool = words.slice();
 
-if (settings.pool === "new") {
-  const newSet = loadNewSet(settings.kid);
-  pool = pool.filter(w => newSet.has(w.id));
-
-} else if (settings.pool === "wrong") {
-  pool = pool.filter(w => wrongSet.has(w.id));
-
-} else if (settings.pool === "cat" && settings.cat) {
-  pool = pool.filter(w => w.cat === settings.cat);
-}
+    if (settings.pool === "new") {
+      pool = pool.filter(w => newSet.has(w.id));
+    } else if (settings.pool === "wrong") {
+      pool = pool.filter(w => wrongSet.has(w.id));
+    } else if (settings.pool === "cat" && settings.cat) {
+      pool = pool.filter(w => w.cat === settings.cat);
+    }
 
     // avoid filter
     let poolAvoided = pool.filter(w => !avoidSet.has(w.id));
     if (poolAvoided.length < Math.min(settings.numQ, 6)) {
-      // 太少就放寬避開（不然會出不出題）
       poolAvoided = pool;
     }
 
@@ -328,22 +319,25 @@ if (settings.pool === "new") {
     let locked = false;
 
     function setStatus() {
-      el.statusPill.textContent = `${idx+1} / ${queue.length}　${KIDS.find(k=>k.id===settings.kid)?.name || ""}`;
+      const kidName = KIDS.find(k => k.id === settings.kid)?.name || "";
+      el.statusPill.textContent = `${idx + 1} / ${queue.length}　${kidName}`;
     }
 
     function setResult(text, ok) {
       el.result.textContent = text || "";
-      el.result.className = "resultLine " + (ok ? "resultOk" : "resultNo");
+      // 你 CSS 用 .ok/.no 或其他也沒關係，至少不會壞
+      el.result.className = "result " + (ok ? "ok" : "no");
     }
 
     function show(node, yes) {
+      if (!node) return;
       node.classList.toggle("hidden", !yes);
     }
 
     function renderChoices(cur) {
+      if (!el.mcArea) return;
       el.mcArea.innerHTML = "";
 
-      // distractors: prioritize from current pool, fallback to all words
       const candidates = poolAvoided.filter(w => w.id !== cur.id);
       const fallback = words.filter(w => w.id !== cur.id);
       const distractors = sample((candidates.length ? candidates : fallback), 3).map(w => w.en);
@@ -361,6 +355,14 @@ if (settings.pool === "new") {
         };
         el.mcArea.appendChild(b);
       }
+    }
+
+    function finish() {
+      el.statusPill.textContent = `${queue.length} / ${queue.length}`;
+      el.qZh.textContent = "🎉 完成！";
+      show(el.mcArea, false);
+      show(el.typeArea, false);
+      setResult("做得很好～回首頁可以換條件再測一次。", true);
     }
 
     function render() {
@@ -393,8 +395,10 @@ if (settings.pool === "new") {
       if (settings.mode === "type") {
         show(el.typeArea, true);
         show(el.mcArea, false);
-        el.typeInput.value = "";
-        el.typeInput.focus();
+        if (el.typeInput) {
+          el.typeInput.value = "";
+          el.typeInput.focus();
+        }
       } else {
         show(el.typeArea, false);
         show(el.mcArea, true);
@@ -410,63 +414,62 @@ if (settings.pool === "new") {
 
       if (ok) {
         setResult("✅ 正確！自動下一題", true);
-        // 答對：自動下一題
         setTimeout(() => {
           if (idx < queue.length - 1) {
             idx++;
             render();
           } else {
-            el.statusPill.textContent = `${queue.length} / ${queue.length}`;
-            el.qZh.textContent = "🎉 完成！";
-            show(el.mcArea, false);
-            show(el.typeArea, false);
-            setResult("做得很好～回首頁可以換條件再測一次。", true);
+            finish();
           }
         }, 350);
       } else {
-        // 答錯：留在原題、記入錯題本
         wrongSet.add(queue[idx].id);
         saveWrongSet(settings.kid, wrongSet);
 
         setResult("❌ 錯了～留在本題，再試一次！", false);
         show(el.btnRetry, true);
-        show(el.btnNext, true); // 仍提供「下一題」方便你介入
+        show(el.btnNext, true);
       }
     }
 
-    el.btnRetry.onclick = () => {
-      locked = false;
-      setResult("", true);
-      show(el.btnRetry, false);
-      show(el.btnNext, false);
-      if (settings.mode === "type") el.typeInput.focus();
-    };
+    if (el.btnRetry) {
+      el.btnRetry.onclick = () => {
+        locked = false;
+        setResult("", true);
+        show(el.btnRetry, false);
+        show(el.btnNext, false);
+        if (settings.mode === "type" && el.typeInput) el.typeInput.focus();
+      };
+    }
 
-    el.btnNext.onclick = () => {
-      if (idx < queue.length - 1) {
-        idx++;
-        render();
-      } else {
-        el.statusPill.textContent = `${queue.length} / ${queue.length}`;
-        el.qZh.textContent = "🎉 完成！";
-        show(el.mcArea, false);
-        show(el.typeArea, false);
-        setResult("回首頁可以換條件再測一次。", true);
-      }
-    };
+    if (el.btnNext) {
+      el.btnNext.onclick = () => {
+        if (idx < queue.length - 1) {
+          idx++;
+          render();
+        } else {
+          finish();
+        }
+      };
+    }
 
-    el.btnCheck.onclick = () => {
-      if (locked) return;
-      const ans = lower(el.typeInput.value);
-      if (!ans) return;
-      checkAnswer(ans, queue[idx].en);
-    };
-    el.typeInput.onkeydown = (e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        el.btnCheck.click();
-      }
-    };
+    if (el.btnCheck) {
+      el.btnCheck.onclick = () => {
+        if (locked) return;
+        const ans = lower(el.typeInput?.value || "");
+        if (!ans) return;
+        checkAnswer(ans, queue[idx].en);
+      };
+    }
+
+    if (el.typeInput) {
+      el.typeInput.onkeydown = (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          el.btnCheck?.click();
+        }
+      };
+    }
 
     render();
   }
@@ -474,6 +477,7 @@ if (settings.pool === "new") {
   // ===== PARENT
   async function bootParent() {
     const root = $("kidStats");
+    if (!root) return;
 
     // load words count (for reference)
     let wordsCount = 0;
@@ -495,7 +499,6 @@ if (settings.pool === "new") {
       const today = todayKey();
       const todaySeen = (seen[today] || []).length;
 
-      // last 7 days accuracy
       let c = 0, t = 0;
       for (const d of last7) {
         const s = stats[d];
@@ -525,7 +528,6 @@ if (settings.pool === "new") {
       else if (isQuiz) await bootQuiz();
       else if (isParent) await bootParent();
     } catch (e) {
-      // 靜默：避免頁面整個白掉
       console.error(e);
     }
   })();
