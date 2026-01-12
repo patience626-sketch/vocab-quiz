@@ -1,370 +1,241 @@
-// app.js (v2) - minimal quiz UI + settings from home.html
-(() => {
-  const WORDS_URL = "./words.json";
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>單字測驗入口</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+  <div class="wrap">
+    <header class="topbarSimple">
+      <div class="brand">
+        <div class="logo" aria-hidden="true">Aa</div>
+        <div class="brandText">
+          <div class="brandTitle">單字測驗入口</div>
+          <div class="brandSub">先選好條件，再開始測驗（大按鈕版）</div>
+        </div>
+      </div>
+    </header>
+
+    <main class="card entranceCard">
+      <div class="entranceGrid">
+
+        <!-- 左：測驗設定（大按鈕選單） -->
+        <section class="entrancePanel">
+          <div class="panelTitle">🧩 測驗區選擇</div>
+
+          <div class="bigPickGrid">
+            <button class="pickBtn" id="pickKid" type="button">
+              <div class="pickTop">選擇小孩</div>
+              <div class="pickVal" id="kidLabel">西瓜</div>
+              <div class="pickHint">點我切換</div>
+            </button>
+
+            <button class="pickBtn" id="pickPool" type="button">
+              <div class="pickTop">題目分類</div>
+              <div class="pickVal" id="poolLabel">單字分類（全部）</div>
+              <div class="pickHint">全部 / 新加入 / 錯題本</div>
+            </button>
+
+            <button class="pickBtn" id="pickAvoid" type="button">
+              <div class="pickTop">避開近幾天重複</div>
+              <div class="pickVal" id="avoidLabel">3 天</div>
+              <div class="pickHint">0/1/3/5/7 天</div>
+            </button>
+
+            <button class="pickBtn" id="pickNum" type="button">
+              <div class="pickTop">測驗題數</div>
+              <div class="pickVal" id="numLabel">20 題</div>
+              <div class="pickHint">10/15/20/30/50</div>
+            </button>
+
+            <button class="pickBtn" id="pickMode" type="button">
+              <div class="pickTop">測驗方式</div>
+              <div class="pickVal" id="modeLabel">選擇題</div>
+              <div class="pickHint">選擇題 / Key in</div>
+            </button>
+
+            <button class="pickBtn" id="pickCat" type="button">
+              <div class="pickTop">單字分類（可選）</div>
+              <div class="pickVal" id="catLabel">全部分類</div>
+              <div class="pickHint">點我選分類</div>
+            </button>
+          </div>
+
+          <div class="entranceActions">
+            <button id="btnGo" class="btn primary btnBig btnStartHuge" type="button">
+              🚀 開始測驗
+            </button>
+            <a class="btn ghost btnBig btnStartHuge" href="./index.html">
+              直接進測驗（用上次設定）
+            </a>
+          </div>
+
+          <div class="hint">
+            小提醒：你可以把入口當首頁使用：<code>/home.html</code>
+          </div>
+        </section>
+
+        <!-- 右：工具區（大按鈕） -->
+        <section class="entrancePanel toolPanel">
+          <div class="panelTitle">🧰 工具區</div>
+
+          <a class="toolCard" href="./admin.html" target="_blank" rel="noopener">
+            <div class="toolEmoji">🔧</div>
+            <div class="toolText">
+              <div class="toolName">後台單字</div>
+              <div class="toolDesc">標註新學 / 改分類 / 批次 / 匯出 words.json</div>
+            </div>
+          </a>
+
+          <a class="toolCard" href="./tool.html" target="_blank" rel="noopener">
+            <div class="toolEmoji">📥</div>
+            <div class="toolText">
+              <div class="toolName">產出 words.json 工具</div>
+              <div class="toolDesc">貼 Excel 表格 → 一鍵轉 words.json</div>
+            </div>
+          </a>
+
+          <div class="bottomLinks" style="margin-top:12px;">
+            <a class="linkBtn" href="./home.html">🏠 入口</a>
+            <a class="linkBtn" href="./index.html">🧩 測驗</a>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+<script>
   const SETTINGS_KEY = "vocab_settings_v2";
   const CAT_OVERRIDE_KEY = "vocab_cat_override_v1";
-
-  // per kid banks
-  const WRONG_KEY = (kid) => `vocab_wrong_v2_${kid}`; // array of ids
-  const NEW_KEY = (kid) => `vocab_new_v1_${kid}`;     // existing from your admin (if any)
-  const SEEN_KEY = (kid) => `vocab_seen_v2_${kid}`;   // { "YYYY-MM-DD": [ids] }
-
   const $ = (id) => document.getElementById(id);
-  const el = {
-    progress: $("progress"),
-    qImg: $("qImg"),
-    qZh: $("qZh"),
-    btnSpeak: $("btnSpeak"),
-    mcArea: $("mcArea"),
-    typeArea: $("typeArea"),
-    typeInput: $("typeInput"),
-    btnCheck: $("btnCheck"),
-    result: $("result"),
-    btnNext: $("btnNext"),
+  const norm = (s) => String(s||"").trim();
+
+  // --- state ---
+  const kids = [
+    {v:"xigua", t:"西瓜"},
+    {v:"youzi", t:"柚子"},
+    {v:"xiaole", t:"小樂"},
+    {v:"apu", t:"阿噗"},
+    {v:"anan", t:"安安"},
+  ];
+  const pools = [
+    {v:"all", t:"單字分類（全部）"},
+    {v:"new", t:"新加入（新學）"},
+    {v:"wrong", t:"錯題本"},
+  ];
+  const avoids = [0,1,3,5,7];
+  const nums = [10,15,20,30,50];
+  const modes = [
+    {v:"mc", t:"選擇題"},
+    {v:"type", t:"Key in"},
+  ];
+
+  let s = {
+    kid:"xigua", pool:"all", avoidDays:3, numQ:20, mode:"mc", cat:""
   };
 
-  const norm = (s) => String(s || "").trim();
-  const lower = (s) => norm(s).toLowerCase();
-
-  function todayKey() {
+  function todayKey(){
     const d = new Date();
     const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
+    const m = String(d.getMonth()+1).padStart(2,"0");
+    const day = String(d.getDate()).padStart(2,"0");
     return `${y}-${m}-${day}`;
   }
 
-  function dateMinusDays(days) {
-    const d = new Date();
-    d.setDate(d.getDate() - days);
-    const y = d.getFullYear();
-    const m = String(d.getMonth() + 1).padStart(2, "0");
-    const day = String(d.getDate()).padStart(2, "0");
-    return `${y}-${m}-${day}`;
+  function loadSettings(){
+    try{
+      const v = JSON.parse(localStorage.getItem(SETTINGS_KEY) || "{}");
+      s.kid = v.kid || s.kid;
+      s.pool = v.pool || s.pool;
+      s.avoidDays = typeof v.avoidDays === "number" ? v.avoidDays : s.avoidDays;
+      s.numQ = typeof v.numQ === "number" ? v.numQ : s.numQ;
+      s.mode = v.mode || s.mode;
+      s.cat = v.cat || "";
+    }catch{}
   }
 
-  function loadJSON(key, fallback) {
-    try {
-      const v = localStorage.getItem(key);
-      if (!v) return fallback;
-      return JSON.parse(v);
-    } catch {
-      return fallback;
+  function saveSettings(){
+    const out = {...s, savedAt: todayKey()};
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(out));
+  }
+
+  function label(){
+    $("kidLabel").textContent = kids.find(x=>x.v===s.kid)?.t || "西瓜";
+    $("poolLabel").textContent = pools.find(x=>x.v===s.pool)?.t || "單字分類（全部）";
+    $("avoidLabel").textContent = (s.avoidDays===0 ? "不避開" : `${s.avoidDays} 天`);
+    $("numLabel").textContent = `${s.numQ} 題`;
+    $("modeLabel").textContent = modes.find(x=>x.v===s.mode)?.t || "選擇題";
+    $("catLabel").textContent = s.cat ? s.cat : "全部分類";
+  }
+
+  function cycle(list, current, key){
+    const idx = list.findIndex(x => (typeof x==="object" ? x.v : x) === current);
+    const next = list[(idx + 1 + list.length) % list.length];
+    s[key] = (typeof next === "object") ? next.v : next;
+    label();
+  }
+
+  // load categories from words.json (optional)
+  async function loadCats(){
+    try{
+      const ov = JSON.parse(localStorage.getItem(CAT_OVERRIDE_KEY) || "{}");
+      const res = await fetch("./words.json", {cache:"no-store"});
+      const words = await res.json();
+      const set = new Set();
+      for (const w of (words||[])){
+        if (!w || !w.id) continue;
+        const c = norm(ov[w.id] ?? w.cat ?? "");
+        if (c) set.add(c);
+      }
+      const cats = Array.from(set).sort((a,b)=>a.localeCompare(b,"zh-Hant"));
+      return cats;
+    }catch{
+      return [];
     }
   }
 
-  function saveJSON(key, value) {
-    localStorage.setItem(key, JSON.stringify(value));
+  function pickFromPrompt(title, options, current){
+    const lines = options.map((o,i)=>`${i+1}. ${o}`).join("\n");
+    const curIdx = Math.max(0, options.indexOf(current)) + 1;
+    const ans = prompt(`${title}\n\n${lines}\n\n目前：${curIdx}\n輸入數字：`);
+    if (ans === null) return current;
+    const n = Number(ans);
+    if (!Number.isFinite(n) || n<1 || n>options.length) return current;
+    return options[n-1];
   }
 
-  function loadSettings() {
-    const s = loadJSON(SETTINGS_KEY, null) || {};
-    return {
-      kid: s.kid || "xigua",
-      pool: s.pool || "all",          // all/new/wrong
-      cat: s.cat || "",
-      avoidDays: Number(s.avoidDays ?? 3),
-      numQ: Number(s.numQ ?? 20),
-      mode: s.mode || "mc",           // mc/type
-    };
-  }
+  // click bindings
+  $("pickKid").addEventListener("click", () => cycle(kids, s.kid, "kid"));
+  $("pickPool").addEventListener("click", () => cycle(pools, s.pool, "pool"));
+  $("pickAvoid").addEventListener("click", () => cycle(avoids, s.avoidDays, "avoidDays"));
+  $("pickNum").addEventListener("click", () => cycle(nums, s.numQ, "numQ"));
+  $("pickMode").addEventListener("click", () => cycle(modes, s.mode, "mode"));
 
-  function loadCatOverride() {
-    return loadJSON(CAT_OVERRIDE_KEY, {});
-  }
-
-  function effectiveCatOf(w, ov) {
-    return norm(ov[w.id] ?? w.cat ?? "");
-  }
-
-  function loadWrongSet(kid) {
-    const arr = loadJSON(WRONG_KEY(kid), []);
-    return new Set(Array.isArray(arr) ? arr : []);
-  }
-
-  function saveWrongSet(kid, set) {
-    saveJSON(WRONG_KEY(kid), Array.from(set));
-  }
-
-  function loadNewSet(kid) {
-    const arr = loadJSON(NEW_KEY(kid), []);
-    return new Set(Array.isArray(arr) ? arr : []);
-  }
-
-  function loadSeenMap(kid) {
-    const m = loadJSON(SEEN_KEY(kid), {});
-    return (m && typeof m === "object") ? m : {};
-  }
-
-  function saveSeenMap(kid, map) {
-    saveJSON(SEEN_KEY(kid), map);
-  }
-
-  function getAvoidIds(kid, avoidDays) {
-    if (!avoidDays || avoidDays <= 0) return new Set();
-    const seen = loadSeenMap(kid);
-    const ids = new Set();
-    // include today-1 .. today-avoidDays
-    for (let i = 1; i <= avoidDays; i++) {
-      const k = dateMinusDays(i);
-      const arr = seen[k] || [];
-      for (const id of arr) ids.add(id);
-    }
-    return ids;
-  }
-
-  function markSeenToday(kid, idsThisSession) {
-    const k = todayKey();
-    const seen = loadSeenMap(kid);
-    const prev = new Set(seen[k] || []);
-    for (const id of idsThisSession) prev.add(id);
-    seen[k] = Array.from(prev);
-    saveSeenMap(kid, seen);
-  }
-
-  function shuffle(a) {
-    for (let i = a.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
-  }
-
-  function sample(arr, n) {
-    const copy = arr.slice();
-    shuffle(copy);
-    return copy.slice(0, Math.min(n, copy.length));
-  }
-
-  function setResult(text, ok) {
-    if (!el.result) return;
-    el.result.textContent = text || "";
-    el.result.className = "result " + (ok ? "ok" : "no");
-  }
-
-  function show(elm, yes) {
-    if (!elm) return;
-    elm.classList.toggle("hidden", !yes);
-  }
-
-  // --- quiz state ---
-  let words = [];
-  let settings = loadSettings();
-  let avoidIds = new Set();
-  let wrongSet = new Set();
-  let newSet = new Set();
-
-  let queue = []; // list of word objects
-  let idx = 0;
-  let locked = false;
-
-  function speakEn(en) {
-    // use Google TTS (tap to play)
-    // simple approach: audio from translate_tts (works in most cases)
-    const text = encodeURIComponent(en);
-    const url = `https://translate.google.com/translate_tts?ie=UTF-8&q=${text}&tl=en&client=tw-ob`;
-    const audio = new Audio(url);
-    audio.play().catch(() => {});
-  }
-
-  function buildPool() {
-    const ov = loadCatOverride();
-
-    let base = words.map(w => ({
-      id: norm(w.id),
-      zh: norm(w.zh),
-      en: norm(w.en),
-      img: norm(w.img),
-      cat: effectiveCatOf(w, ov),
-    })).filter(w => w.id && w.zh && w.en);
-
-    // filter by pool
-    if (settings.pool === "new") {
-      base = base.filter(w => newSet.has(w.id));
-    } else if (settings.pool === "wrong") {
-      base = base.filter(w => wrongSet.has(w.id));
-    }
-
-    // filter by category (only meaningful when pool=all)
-    if (settings.cat) {
-      base = base.filter(w => w.cat === settings.cat);
-    }
-
-    // avoid recently seen
-    base = base.filter(w => !avoidIds.has(w.id));
-
-    return base;
-  }
-
-  function makeQueue() {
-    const pool = buildPool();
-    // if pool too small (because avoidDays), we relax avoid
-    let finalPool = pool;
-    if (finalPool.length < Math.max(5, settings.numQ)) {
-      // relax: ignore avoidDays but still respect pool/cat filters
-      const ov = loadCatOverride();
-      let base = words.map(w => ({
-        id: norm(w.id),
-        zh: norm(w.zh),
-        en: norm(w.en),
-        img: norm(w.img),
-        cat: effectiveCatOf(w, ov),
-      })).filter(w => w.id && w.zh && w.en);
-
-      if (settings.pool === "new") base = base.filter(w => newSet.has(w.id));
-      else if (settings.pool === "wrong") base = base.filter(w => wrongSet.has(w.id));
-      if (settings.cat) base = base.filter(w => w.cat === settings.cat);
-
-      finalPool = base;
-    }
-
-    queue = sample(finalPool, settings.numQ);
-    idx = 0;
-
-    if (queue.length === 0) {
-      if (el.qZh) el.qZh.textContent = "目前題庫沒有符合條件的單字";
-      if (el.progress) el.progress.textContent = "0 / 0";
-      show(el.btnNext, false);
+  $("pickCat").addEventListener("click", async () => {
+    const cats = await loadCats();
+    if (!cats.length){
+      alert("目前 words.json 沒有分類或讀取不到分類（仍可用全部分類測驗）。");
       return;
     }
+    const options = ["全部分類", ...cats];
+    const chosen = pickFromPrompt("選擇分類", options, s.cat ? s.cat : "全部分類");
+    s.cat = (chosen === "全部分類") ? "" : chosen;
+    label();
+  });
 
-    // mark seen today (avoid repeats in next days)
-    markSeenToday(settings.kid, queue.map(w => w.id));
+  $("btnGo").addEventListener("click", () => {
+    saveSettings();
+    // 直接進測驗
+    location.href = "./index.html";
+  });
 
-    renderQuestion();
-  }
-
-  function renderQuestion() {
-    locked = false;
-    setResult("", true);
-    show(el.btnNext, false);
-
-    const total = queue.length;
-    const cur = queue[idx];
-
-    if (el.progress) el.progress.textContent = `${Math.min(idx + 1, total)} / ${total}`;
-    if (el.qZh) el.qZh.textContent = cur.zh;
-
-    // image
-    if (el.qImg) {
-      el.qImg.src = cur.img || "";
-      el.qImg.onerror = () => {
-        // keep frame but clear broken icon
-        el.qImg.removeAttribute("src");
-      };
-    }
-
-    // speak
-    if (el.btnSpeak) {
-      el.btnSpeak.onclick = () => speakEn(cur.en);
-    }
-
-    // mode
-    if (settings.mode === "type") {
-      show(el.typeArea, true);
-      show(el.mcArea, false);
-      if (el.typeInput) el.typeInput.value = "";
-      if (el.typeInput) el.typeInput.focus();
-
-      if (el.btnCheck) {
-        el.btnCheck.onclick = () => {
-          if (locked) return;
-          const ans = lower(el.typeInput ? el.typeInput.value : "");
-          if (!ans) return;
-          checkAnswer(ans, cur.en);
-        };
-      }
-      if (el.typeInput) {
-        el.typeInput.onkeydown = (e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            if (el.btnCheck) el.btnCheck.click();
-          }
-        };
-      }
-    } else {
-      show(el.typeArea, false);
-      show(el.mcArea, true);
-      renderChoices(cur);
-    }
-  }
-
-  function renderChoices(cur) {
-    if (!el.mcArea) return;
-    el.mcArea.innerHTML = "";
-
-    // choices: correct + 3 random from same pool (fallback to all)
-    const pool = buildPool();
-    const candidates = pool.filter(w => w.id !== cur.id);
-    const distractors = sample(candidates.length ? candidates : words.filter(w => w.id !== cur.id), 3)
-      .map(w => w.en);
-
-    const options = shuffle([cur.en, ...distractors]);
-
-    for (const opt of options) {
-      const b = document.createElement("button");
-      b.className = "choiceBtn";
-      b.type = "button";
-      b.textContent = opt;
-      b.onclick = () => {
-        if (locked) return;
-        checkAnswer(opt, cur.en);
-      };
-      el.mcArea.appendChild(b);
-    }
-  }
-
-  function checkAnswer(inputEn, correctEn) {
-    locked = true;
-    const ok = lower(inputEn) === lower(correctEn);
-
-    if (ok) {
-      setResult("✅ 正確！", true);
-      // correct => auto next
-      setTimeout(() => nextQuestion(), 350);
-    } else {
-      setResult(`❌ 錯誤`, false);
-      // wrong => add to wrong bank, show next button
-      wrongSet.add(queue[idx].id);
-      saveWrongSet(settings.kid, wrongSet);
-      show(el.btnNext, true);
-    }
-  }
-
-  function nextQuestion() {
-    if (queue.length === 0) return;
-    if (idx < queue.length - 1) {
-      idx++;
-      renderQuestion();
-    } else {
-      // finished
-      if (el.qZh) el.qZh.textContent = "🎉 完成！回入口可改條件再測一次";
-      if (el.progress) el.progress.textContent = `${queue.length} / ${queue.length}`;
-      show(el.mcArea, false);
-      show(el.typeArea, false);
-      show(el.btnNext, false);
-    }
-  }
-
-  async function boot() {
-    // wiring next
-    if (el.btnNext) el.btnNext.onclick = () => nextQuestion();
-
-    settings = loadSettings();
-    wrongSet = loadWrongSet(settings.kid);
-    newSet = loadNewSet(settings.kid);
-    avoidIds = getAvoidIds(settings.kid, settings.avoidDays);
-
-    try {
-      const res = await fetch(WORDS_URL, { cache: "no-store" });
-      const data = await res.json();
-      words = Array.isArray(data) ? data : [];
-      makeQueue();
-    } catch (e) {
-      if (el.qZh) el.qZh.textContent = "載入 words.json 失敗，請確認檔案在 repo 根目錄";
-      if (el.progress) el.progress.textContent = "錯誤";
-    }
-  }
-
-  boot();
-})();
+  // init
+  loadSettings();
+  label();
+</script>
+</body>
+</html>
