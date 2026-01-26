@@ -1574,4 +1574,166 @@
     "img": "images/melon.jpg",
     "cat": "食物"
   }
+[
+  {
+    "id": "draw",
+    "zh": "畫(圖)",
+    "en": "draw",
+    "img": "draw.jpg",
+    "cat": "學校用品"
+  },
+  {
+    "id": "hawk",
+    "zh": "鷹",
+    "en": "hawk",
+    "img": "hawk.jpg",
+    "cat": "動物"
+  },
+  {
+    "id": "straw",
+    "zh": "吸管",
+    "en": "straw",
+    "img": "straw.jpg",
+    "cat": ""
+  },
+  {
+    "id": "law",
+    "zh": "法律",
+    "en": "law",
+    "img": "law.jpg",
+    "cat": ""
+  },
+  {
+    "id": "lawn",
+    "zh": "草坪",
+    "en": "lawn",
+    "img": "lawn.jpg",
+    "cat": ""
+  },
+  {
+    "id": "paw",
+    "zh": "爪子",
+    "en": "paw",
+    "img": "paw.jpg",
+    "cat": "動物"
+  },
+  {
+    "id": "saw",
+    "zh": "鋸子",
+    "en": "saw",
+    "img": "saw.jpg",
+    "cat": ""
+  },
+  {
+    "id": "claw",
+    "zh": "爪子",
+    "en": "claw",
+    "img": "claw.jpg",
+    "cat": "動物"
+  },
+  {
+    "id": "jaw",
+    "zh": "下顎",
+    "en": "jaw",
+    "img": "jaw.jpg",
+    "cat": "動物"
+  },
+  {
+    "id": "yawn",
+    "zh": "打哈欠",
+    "en": "yawn",
+    "img": "yawn.jpg",
+    "cat": "動物"
+  },
+  {
+    "id": "seesaw",
+    "zh": "翹翹板",
+    "en": "seesaw",
+    "img": "seesaw.jpg",
+    "cat": ""
+  },
+  {
+    "id": "crawl",
+    "zh": "爬行",
+    "en": "crawl",
+    "img": "crawl.jpg",
+    "cat": "動物"
+  },
+  {
+    "id": "autumn",
+    "zh": "秋天",
+    "en": "autumn",
+    "img": "autumn.jpg",
+    "cat": ""
+  },
+  {
+    "id": "launch",
+    "zh": "發射",
+    "en": "launch",
+    "img": "launch.jpg",
+    "cat": "交通工具"
+  },
+  {
+    "id": "August",
+    "zh": "8月",
+    "en": "August",
+    "img": "August.jpg",
+    "cat": ""
+  },
+  {
+    "id": "aunt",
+    "zh": "阿姨/姑姑",
+    "en": "aunt",
+    "img": "aunt.png",
+    "cat": "家庭"
+  },
+  {
+    "id": "haunt",
+    "zh": "鬼屋",
+    "en": "haunt",
+    "img": "haunt.jpg",
+    "cat": ""
+  },
+  {
+    "id": "dinosaur",
+    "zh": "恐龍",
+    "en": "dinosaur",
+    "img": "dinosaur.jpg",
+    "cat": "動物"
+  },
+  {
+    "id": "Paul",
+    "zh": "保羅",
+    "en": "Paul",
+    "img": "Paul.jpg",
+    "cat": ""
+  },
+  {
+    "id": "fault",
+    "zh": "錯誤",
+    "en": "fault",
+    "img": "fault.jpg",
+    "cat": ""
+  },
+  {
+    "id": "sauce",
+    "zh": "醬料",
+    "en": "sauce",
+    "img": "sauce.jpg",
+    "cat": "食物"
+  },
+  {
+    "id": "puase",
+    "zh": "暫停",
+    "en": "puase",
+    "img": "puase.jpg",
+    "cat": ""
+  },
+  {
+    "id": "author",
+    "zh": "作家",
+    "en": "author",
+    "img": "author.jpg",
+    "cat": "職業"
+  }
 ]
