@@ -1734,5 +1734,96 @@
     "en": "author",
     "img": "images/author.jpg",
     "cat": "職業"
+  },
+{
+    "id": "nurse",
+    "zh": "護士",
+    "en": "nurse",
+    "img": "images/nurse.jpg",
+    "cat": ""
+  },
+  {
+    "id": "ox",
+    "zh": "公牛",
+    "en": "ox",
+    "img": "images/ox.jpg",
+    "cat": ""
+  },
+  {
+    "id": "nose",
+    "zh": "鼻子",
+    "en": "nose",
+    "img": "images/nose.jpg",
+    "cat": ""
+  },
+  {
+    "id": "queen",
+    "zh": "皇后",
+    "en": "queen",
+    "img": "images/queen.jpg",
+    "cat": ""
+  },
+  {
+    "id": "rabbit",
+    "zh": "兔子",
+    "en": "rabbit",
+    "img": "images/rabbit.jpg",
+    "cat": ""
+  },
+  {
+    "id": "sea",
+    "zh": "海",
+    "en": "sea",
+    "img": "images/sea.jpg",
+    "cat": ""
+  },
+  {
+    "id": "up",
+    "zh": "(向)上",
+    "en": "up",
+    "img": "images/up.jpg",
+    "cat": ""
+  },
+  {
+    "id": "van",
+    "zh": "貨車",
+    "en": "van",
+    "img": "images/van.jpg",
+    "cat": ""
+  },
+  {
+    "id": "vest",
+    "zh": "背心",
+    "en": "vest",
+    "img": "images/vest.jpg",
+    "cat": ""
+  },
+  {
+    "id": "watch",
+    "zh": "手錶",
+    "en": "watch",
+    "img": "images/watch.jpg",
+    "cat": ""
+  },
+  {
+    "id": "water",
+    "zh": "水",
+    "en": "water",
+    "img": "images/water.jpg",
+    "cat": ""
+  },
+  {
+    "id": "box",
+    "zh": "箱子",
+    "en": "box",
+    "img": "images/box.jpg",
+    "cat": ""
+  },
+  {
+    "id": "yo-yo",
+    "zh": "溜溜球",
+    "en": "yo-yo",
+    "img": "images/yo-yo.jpg",
+    "cat": ""
   }
 ]
