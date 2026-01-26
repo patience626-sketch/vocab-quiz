@@ -1578,161 +1578,161 @@
     "id": "draw",
     "zh": "畫(圖)",
     "en": "draw",
-    "img": "draw.jpg",
+    "img": "images/draw.jpg",
     "cat": "學校用品"
   },
   {
     "id": "hawk",
     "zh": "鷹",
     "en": "hawk",
-    "img": "hawk.jpg",
+    "img": "images/hawk.jpg",
     "cat": "動物"
   },
   {
     "id": "straw",
     "zh": "吸管",
     "en": "straw",
-    "img": "straw.jpg",
+    "img": "images/straw.jpg",
     "cat": ""
   },
   {
     "id": "law",
     "zh": "法律",
     "en": "law",
-    "img": "law.jpg",
+    "img": "images/law.jpg",
     "cat": ""
   },
   {
     "id": "lawn",
     "zh": "草坪",
     "en": "lawn",
-    "img": "lawn.jpg",
+    "img": "images/lawn.jpg",
     "cat": ""
   },
   {
     "id": "paw",
     "zh": "爪子",
     "en": "paw",
-    "img": "paw.jpg",
+    "img": "images/paw.jpg",
     "cat": "動物"
   },
   {
     "id": "saw",
     "zh": "鋸子",
     "en": "saw",
-    "img": "saw.jpg",
+    "img": "images/saw.jpg",
     "cat": ""
   },
   {
     "id": "claw",
     "zh": "爪子",
     "en": "claw",
-    "img": "claw.jpg",
+    "img": "images/claw.jpg",
     "cat": "動物"
   },
   {
     "id": "jaw",
     "zh": "下顎",
     "en": "jaw",
-    "img": "jaw.jpg",
+    "img": "images/jaw.jpg",
     "cat": "動物"
   },
   {
     "id": "yawn",
     "zh": "打哈欠",
     "en": "yawn",
-    "img": "yawn.jpg",
+    "img": "images/yawn.jpg",
     "cat": "動物"
   },
   {
     "id": "seesaw",
     "zh": "翹翹板",
     "en": "seesaw",
-    "img": "seesaw.jpg",
+    "img": "images/seesaw.jpg",
     "cat": ""
   },
   {
     "id": "crawl",
     "zh": "爬行",
     "en": "crawl",
-    "img": "crawl.jpg",
+    "img": "images/crawl.jpg",
     "cat": "動物"
   },
   {
     "id": "autumn",
     "zh": "秋天",
     "en": "autumn",
-    "img": "autumn.jpg",
+    "img": "images/autumn.jpg",
     "cat": ""
   },
   {
     "id": "launch",
     "zh": "發射",
     "en": "launch",
-    "img": "launch.jpg",
+    "img": "images/launch.jpg",
     "cat": "交通工具"
   },
   {
     "id": "August",
     "zh": "8月",
     "en": "August",
-    "img": "August.jpg",
+    "img": "images/August.jpg",
     "cat": ""
   },
   {
     "id": "aunt",
     "zh": "阿姨/姑姑",
     "en": "aunt",
-    "img": "aunt.png",
+    "img": "images/aunt.png",
     "cat": "家庭"
   },
   {
     "id": "haunt",
     "zh": "鬼屋",
     "en": "haunt",
-    "img": "haunt.jpg",
+    "img": "images/haunt.jpg",
     "cat": ""
   },
   {
     "id": "dinosaur",
     "zh": "恐龍",
     "en": "dinosaur",
-    "img": "dinosaur.jpg",
+    "img": "images/dinosaur.jpg",
     "cat": "動物"
   },
   {
     "id": "Paul",
     "zh": "保羅",
     "en": "Paul",
-    "img": "Paul.jpg",
+    "img": "images/Paul.jpg",
     "cat": ""
   },
   {
     "id": "fault",
     "zh": "錯誤",
     "en": "fault",
-    "img": "fault.jpg",
+    "img": "images/fault.jpg",
     "cat": ""
   },
   {
     "id": "sauce",
     "zh": "醬料",
     "en": "sauce",
-    "img": "sauce.jpg",
+    "img": "images/sauce.jpg",
     "cat": "食物"
   },
   {
     "id": "puase",
     "zh": "暫停",
     "en": "puase",
-    "img": "puase.jpg",
+    "img": "images/puase.jpg",
     "cat": ""
   },
   {
     "id": "author",
     "zh": "作家",
     "en": "author",
-    "img": "author.jpg",
+    "img": "images/author.jpg",
     "cat": "職業"
   }
 ]
